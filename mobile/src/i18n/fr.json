@@ -1,0 +1,83 @@
+{
+  "app": {
+    "name": "MotoSecure",
+    "subtitle": "Contrôle"
+  },
+  "home": {
+    "greeting": "Console de contrôle",
+    "subtitle": "Scannez le badge d'un conducteur ou recherchez par ID pour vérifier son statut instantanément.",
+    "scanButton": "Scanner un badge",
+    "manualButton": "Saisir l'ID du badge",
+    "recentTitle": "Scans récents",
+    "noRecent": "Aucun scan effectué aujourd'hui."
+  },
+  "scan": {
+    "title": "Scanner le badge",
+    "instructions": "Pointez la caméra vers le badge QR du conducteur.",
+    "permissionTitle": "Accès à la caméra requis",
+    "permissionBody": "MotoSecure a besoin de la caméra pour scanner les badges des conducteurs.",
+    "grantPermission": "Autoriser la caméra",
+    "scanAgain": "Scanner à nouveau"
+  },
+  "manual": {
+    "title": "Saisir l'ID du badge",
+    "placeholder": "ex. MS-4F2A9C1B",
+    "verify": "Vérifier"
+  },
+  "result": {
+    "title": "Résultat de la vérification",
+    "valid": "Autorisé à circuler",
+    "expired": "Permis expiré",
+    "suspended": "Suspendu",
+    "flagged": "Signalé — ne pas autoriser",
+    "not_found": "Badge non reconnu",
+    "syndicate": "Syndicat",
+    "bike": "Moto",
+    "licenseExpires": "Expiration du permis",
+    "reportIncident": "Signaler un incident",
+    "done": "Terminé",
+    "loading": "Vérification du badge…",
+    "errorTitle": "Vérification impossible",
+    "errorBody": "Vérifiez votre connexion et réessayez."
+  },
+  "incident": {
+    "title": "Signaler un incident",
+    "typeLabel": "Type",
+    "severityLabel": "Gravité",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Que s'est-il passé ?",
+    "submit": "Envoyer le rapport",
+    "submitted": "Incident enregistré.",
+    "severityLow": "Faible",
+    "severityMedium": "Moyenne",
+    "severityHigh": "Élevée",
+    "severityCritical": "Critique",
+    "typeIncident": "Incident",
+    "typeWarning": "Avertissement",
+    "typeImpound": "Mise en fourrière"
+  },
+  "login": {
+    "title": "Connexion agent",
+    "subtitle": "Connectez-vous avec vos identifiants d'agent municipal.",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signingIn": "Connexion en cours…",
+    "invalidCredentials": "E-mail ou mot de passe invalide.",
+    "demoHint": "Démo : officer@buea.cm / Officer123!"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "theme": "Apparence",
+    "light": "Clair",
+    "dark": "Sombre",
+    "signedInAs": "Connecté en tant que",
+    "logout": "Se déconnecter"
+  },
+  "common": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "ok": "OK"
+  }
+}

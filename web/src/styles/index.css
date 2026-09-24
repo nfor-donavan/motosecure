@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: #ffb627;
+  color: #0a1628;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid #ffb627;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Thin, brand-tinted scrollbar for the dashboard shell */
+.brand-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.brand-scroll::-webkit-scrollbar-thumb {
+  background: rgba(27, 58, 107, 0.25);
+  border-radius: 8px;
+}
+.dark .brand-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 182, 39, 0.2);
+}
+
+.stat-number {
+  font-variant-numeric: tabular-nums;
+}

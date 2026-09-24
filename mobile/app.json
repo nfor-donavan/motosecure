@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "MotoSecure Enforcement",
+    "slug": "motosecure-enforcement",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A1628"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "cm.motosecure.enforcement",
+      "infoPlist": {
+        "NSCameraUsageDescription": "MotoSecure uses the camera to scan rider badge QR codes."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0A1628"
+      },
+      "package": "cm.motosecure.enforcement",
+      "permissions": ["CAMERA"]
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "MotoSecure uses the camera to scan rider badge QR codes."
+        }
+      ]
+    ]
+  }
+}

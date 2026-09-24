@@ -1,0 +1,47 @@
+export const palette = {
+  navy900: "#0A1628",
+  navy850: "#0B1A32",
+  navy800: "#0F213E",
+  navy700: "#142C52",
+  navy600: "#1B3A6B",
+  navy500: "#2A4E85",
+  navy300: "#7E9CCC",
+  navy100: "#D7E1F1",
+  navy50: "#EEF2F9",
+  gold500: "#F5A623",
+  gold400: "#FFB627",
+  gold100: "#FFEDC2",
+  emerald: "#059669",
+  emeraldBg: "#ECFDF5",
+  rose: "#E11D48",
+  roseBg: "#FFF1F2",
+  white: "#FFFFFF",
+};
+
+export const lightTheme = {
+  mode: "light",
+  background: palette.navy50,
+  surface: palette.white,
+  surfaceAlt: "#F7F9FC",
+  text: palette.navy900,
+  textMuted: "#5A6B8C",
+  border: "#E4E9F3",
+  primary: palette.navy600,
+  accent: palette.gold500,
+  onPrimary: palette.white,
+  onAccent: palette.navy900,
+};
+
+export const darkTheme = {
+  mode: "dark",
+  background: palette.navy900,
+  surface: palette.navy850,
+  surfaceAlt: palette.navy800,
+  text: "#F3F6FC",
+  textMuted: palette.navy300,
+  border: "#1E3055",
+  primary: palette.gold500,
+  accent: palette.gold500,
+  onPrimary: palette.navy900,
+  onAccent: palette.navy900,
+};

@@ -1,0 +1,83 @@
+{
+  "app": {
+    "name": "MotoSecure",
+    "subtitle": "Enforcement"
+  },
+  "home": {
+    "greeting": "Enforcement console",
+    "subtitle": "Scan a rider's badge or search by ID to verify their status instantly.",
+    "scanButton": "Scan a badge",
+    "manualButton": "Enter badge ID manually",
+    "recentTitle": "Recent scans",
+    "noRecent": "No scans yet today."
+  },
+  "scan": {
+    "title": "Scan badge",
+    "instructions": "Point the camera at the rider's QR badge.",
+    "permissionTitle": "Camera access needed",
+    "permissionBody": "MotoSecure needs your camera to scan rider badges.",
+    "grantPermission": "Grant camera access",
+    "scanAgain": "Scan again"
+  },
+  "manual": {
+    "title": "Enter badge ID",
+    "placeholder": "e.g. MS-4F2A9C1B",
+    "verify": "Verify"
+  },
+  "result": {
+    "title": "Verification result",
+    "valid": "Cleared to operate",
+    "expired": "License expired",
+    "suspended": "Suspended",
+    "flagged": "Flagged — do not clear",
+    "not_found": "Badge not recognized",
+    "syndicate": "Syndicate",
+    "bike": "Bike",
+    "licenseExpires": "License expires",
+    "reportIncident": "Report an incident",
+    "done": "Done",
+    "loading": "Checking badge…",
+    "errorTitle": "Could not verify",
+    "errorBody": "Check your connection and try again."
+  },
+  "incident": {
+    "title": "Report incident",
+    "typeLabel": "Type",
+    "severityLabel": "Severity",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What happened?",
+    "submit": "Submit report",
+    "submitted": "Incident recorded.",
+    "severityLow": "Low",
+    "severityMedium": "Medium",
+    "severityHigh": "High",
+    "severityCritical": "Critical",
+    "typeIncident": "Incident",
+    "typeWarning": "Warning",
+    "typeImpound": "Impound"
+  },
+  "login": {
+    "title": "Officer sign in",
+    "subtitle": "Sign in with your municipal enforcement credentials.",
+    "email": "Email address",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "invalidCredentials": "Invalid email or password.",
+    "demoHint": "Demo: officer@buea.cm / Officer123!"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "signedInAs": "Signed in as",
+    "logout": "Log out"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "ok": "OK"
+  }
+}
