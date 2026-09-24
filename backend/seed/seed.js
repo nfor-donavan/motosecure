@@ -19,12 +19,43 @@ const Bike = require("../models/Bike");
 const EnforcementLog = require("../models/EnforcementLog");
 
 const FIRST_NAMES = [
-  "Enow", "Ashu", "Divine", "Mola", "Agbor", "Tabe", "Ngala", "Ekema", "Fon", "Besong",
-  "Ndifor", "Ngole", "Achu", "Egbe", "Orock", "Manga", "Eyongwan", "Mbua", "Bate", "Nkemla",
+  "Enow",
+  "Ashu",
+  "Divine",
+  "Mola",
+  "Agbor",
+  "Tabe",
+  "Ngala",
+  "Ekema",
+  "Fon",
+  "Besong",
+  "Ndifor",
+  "Ngole",
+  "Achu",
+  "Egbe",
+  "Orock",
+  "Manga",
+  "Eyongwan",
+  "Mbua",
+  "Bate",
+  "Nkemla",
 ];
 const LAST_NAMES = [
-  "Peter", "Collins", "Junior", "Etonde", "Divine", "Njie", "Godlove", "Ebot", "Arrey", "Tanyi",
-  "Mokeba", "Ayamba", "Esambe", "Njoh", "Ekane",
+  "Peter",
+  "Collins",
+  "Junior",
+  "Etonde",
+  "Divine",
+  "Njie",
+  "Godlove",
+  "Ebot",
+  "Arrey",
+  "Tanyi",
+  "Mokeba",
+  "Ayamba",
+  "Esambe",
+  "Njoh",
+  "Ekane",
 ];
 const BIKE_MAKES = [
   ["Bajaj", "Boxer"],
@@ -57,7 +88,9 @@ const run = async () => {
     email: process.env.SEED_SUPERADMIN_EMAIL || "admin@motosecure.cm",
     role: "super_admin",
   });
-  await superAdmin.setPassword(process.env.SEED_SUPERADMIN_PASSWORD || "ChangeMe123!");
+  await superAdmin.setPassword(
+    process.env.SEED_SUPERADMIN_PASSWORD || "ChangeMe123!",
+  );
   await superAdmin.save();
 
   const councilDefs = [
@@ -94,7 +127,7 @@ const run = async () => {
       region: "North West",
       mayorName: "Hon. Fon Achu",
       contactEmail: "council@bamenda3.cm",
-      status: "trial",
+      status: "pending",
       plan: "trial",
       syndicates: [{ name: "Nkwen Commercial Bike Union", zone: "Nkwen" }],
     },
@@ -130,7 +163,9 @@ const run = async () => {
     });
     await mayor.setPassword("Mayor123!");
     await mayor.save();
-    demoCredentials.push(`  mayor (${def.slug})              ${mayorEmail} / Mayor123!`);
+    demoCredentials.push(
+      `  mayor (${def.slug})              ${mayorEmail} / Mayor123!`,
+    );
 
     const officerEmail = `officer@${slugKey}.cm`;
     const officer = new User({
@@ -142,10 +177,15 @@ const run = async () => {
     });
     await officer.setPassword("Officer123!");
     await officer.save();
-    demoCredentials.push(`  enforcement_officer (${def.slug}) ${officerEmail} / Officer123!`);
+    demoCredentials.push(
+      `  enforcement_officer (${def.slug}) ${officerEmail} / Officer123!`,
+    );
 
     for (const [sIndex, sDef] of def.syndicates.entries()) {
-      const status = sIndex === def.syndicates.length - 1 && def.syndicates.length > 1 ? "pending" : "approved";
+      const status =
+        sIndex === def.syndicates.length - 1 && def.syndicates.length > 1
+          ? "pending"
+          : "approved";
       const syndicate = await Syndicate.create({
         tenant: tenant._id,
         name: sDef.name,
@@ -169,7 +209,9 @@ const run = async () => {
         });
         await syndicateAdmin.setPassword("Syndicate123!");
         await syndicateAdmin.save();
-        demoCredentials.push(`  syndicate_admin (${def.slug})    ${syndicateAdminEmail} / Syndicate123!`);
+        demoCredentials.push(
+          `  syndicate_admin (${def.slug})    ${syndicateAdminEmail} / Syndicate123!`,
+        );
       }
 
       const riderCount = status === "approved" ? randInt(6, 10) : randInt(1, 3);
@@ -178,14 +220,20 @@ const run = async () => {
       for (let i = 0; i < riderCount; i++) {
         const statusRoll = Math.random();
         const riderStatus =
-          statusRoll < 0.75 ? "active" : statusRoll < 0.88 ? "under_review" : statusRoll < 0.96 ? "suspended" : "revoked";
+          statusRoll < 0.75
+            ? "active"
+            : statusRoll < 0.88
+              ? "under_review"
+              : statusRoll < 0.96
+                ? "suspended"
+                : "revoked";
 
         const licenseExpiresAt =
           riderStatus === "revoked"
             ? daysAgo(randInt(30, 200))
             : Math.random() < 0.1
-            ? daysAgo(randInt(1, 20)) // a few expired licenses for realism
-            : new Date(Date.now() + randInt(30, 300) * 24 * 60 * 60 * 1000);
+              ? daysAgo(randInt(1, 20)) // a few expired licenses for realism
+              : new Date(Date.now() + randInt(30, 300) * 24 * 60 * 60 * 1000);
 
         const rider = await Rider.create({
           tenant: tenant._id,
@@ -201,20 +249,32 @@ const run = async () => {
         });
 
         const [make, model] = rand(BIKE_MAKES);
-        const regionCode = def.region === "South West" ? "SW" : def.region === "Littoral" ? "LT" : "NW";
+        const regionCode =
+          def.region === "South West"
+            ? "SW"
+            : def.region === "Littoral"
+              ? "LT"
+              : "NW";
         const bike = await Bike.create({
           tenant: tenant._id,
           syndicate: syndicate._id,
           rider: rider._id,
           plateNumber: `${regionCode} ${randInt(100, 999)} ${String.fromCharCode(65 + randInt(0, 25))}${String.fromCharCode(
-            65 + randInt(0, 25)
+            65 + randInt(0, 25),
           )}`,
           make,
           model,
           color: rand(COLORS),
           yearOfManufacture: randInt(2017, 2024),
-          insuranceProvider: rand(["Activa Insurance", "Chanas Assurances", "Saar Assurances", "Prudential BSN"]),
-          insuranceExpiresAt: new Date(Date.now() + randInt(-15, 200) * 24 * 60 * 60 * 1000),
+          insuranceProvider: rand([
+            "Activa Insurance",
+            "Chanas Assurances",
+            "Saar Assurances",
+            "Prudential BSN",
+          ]),
+          insuranceExpiresAt: new Date(
+            Date.now() + randInt(-15, 200) * 24 * 60 * 60 * 1000,
+          ),
           roadworthy: Math.random() > 0.12,
           status: "active",
         });
@@ -229,7 +289,8 @@ const run = async () => {
         for (let v = 0; v < verificationEvents; v++) {
           let result = "valid";
           if (riderStatus === "suspended") result = "suspended";
-          else if (riderStatus === "revoked" || riderStatus === "under_review") result = "flagged";
+          else if (riderStatus === "revoked" || riderStatus === "under_review")
+            result = "flagged";
           else if (licenseExpiresAt < new Date()) result = "expired";
 
           await EnforcementLog.create({
@@ -239,7 +300,11 @@ const run = async () => {
             officer: officer._id,
             type: "verification",
             result,
-            location: { label: `${sDef.zone} checkpoint`, lat: 4.1 + Math.random() * 0.3, lng: 9.2 + Math.random() * 0.3 },
+            location: {
+              label: `${sDef.zone} checkpoint`,
+              lat: 4.1 + Math.random() * 0.3,
+              lng: 9.2 + Math.random() * 0.3,
+            },
             createdAt: daysAgo(randInt(0, 29)),
           });
         }
@@ -263,7 +328,11 @@ const run = async () => {
             result: "flagged",
             severity,
             description: rand(descriptions),
-            location: { label: `${sDef.zone} area`, lat: 4.1 + Math.random() * 0.3, lng: 9.2 + Math.random() * 0.3 },
+            location: {
+              label: `${sDef.zone} area`,
+              lat: 4.1 + Math.random() * 0.3,
+              lng: 9.2 + Math.random() * 0.3,
+            },
             createdAt: daysAgo(randInt(0, 29)),
           });
           rider.incidentCount += 1;
@@ -278,12 +347,16 @@ const run = async () => {
   }
 
   console.log(
-    `\n[seed] Done! Seeded ${totalRiders} riders and ${totalIncidents} incidents across ${councilDefs.length} municipalities.`
+    `\n[seed] Done! Seeded ${totalRiders} riders and ${totalIncidents} incidents across ${councilDefs.length} municipalities.`,
   );
   console.log("\n[seed] Demo accounts:");
   demoCredentials.forEach((line) => console.log(line));
-  console.log("\n[seed] Tenant slugs (for the syndicate enrollment portal): buea, douala-v, bamenda-iii");
-  console.log("[seed] Primary demo tenant for the pitch: buea (fully populated, premium plan, active)");
+  console.log(
+    "\n[seed] Tenant slugs (for the syndicate enrollment portal): buea, douala-v, bamenda-iii",
+  );
+  console.log(
+    "[seed] Primary demo tenant for the pitch: buea (fully populated, premium plan, active)",
+  );
 
   await mongoose.connection.close();
   process.exit(0);
