@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,6 +8,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { useAuth } from "../lib/AuthContext";
 import Logo from "../components/Logo";
 import StatusPill from "../components/StatusPill";
+import { refreshSnapshot, flushOfflineQueue, getQueueCount } from "../lib/offlineCache";
 
 const RECENT_KEY = "motosecure-recent-scans";
 
@@ -15,12 +17,23 @@ export default function HomeScreen({ navigation }) {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [recent, setRecent] = useState([]);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
       AsyncStorage.getItem(RECENT_KEY).then((raw) => {
         setRecent(raw ? JSON.parse(raw) : []);
       });
+
+      // Best-effort, silent: if we're online, this refreshes the local
+      // rider cache and syncs any scans made while offline. If we're
+      // not online, both calls simply fail quietly and we try again
+      // next time this screen gains focus.
+      refreshSnapshot();
+      flushOfflineQueue().then((result) => {
+        if (result) getQueueCount().then(setPendingCount);
+      });
+      getQueueCount().then(setPendingCount);
     }, [])
   );
 
@@ -44,6 +57,13 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.hero}>
         <Text style={[styles.heroTitle, { color: theme.text }]}>{t("home.greeting")}</Text>
         <Text style={[styles.heroSubtitle, { color: theme.textMuted }]}>{t("home.subtitle")}</Text>
+        {pendingCount > 0 && (
+          <View style={[styles.pendingPill, { backgroundColor: theme.surfaceAlt, borderColor: theme.border }]}>
+            <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700" }}>
+              {t("home.pendingSync", { count: pendingCount })}
+            </Text>
+          </View>
+        )}
       </View>
 
       <TouchableOpacity
@@ -103,6 +123,14 @@ const styles = StyleSheet.create({
   hero: { marginTop: 28 },
   heroTitle: { fontSize: 24, fontWeight: "800" },
   heroSubtitle: { fontSize: 13, marginTop: 6, lineHeight: 19 },
+  pendingPill: {
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 12,
+  },
   scanCard: {
     marginTop: 24,
     borderRadius: 20,

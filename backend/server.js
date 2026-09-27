@@ -14,6 +14,7 @@ const syndicateRoutes = require("./routes/syndicateRoutes");
 const riderRoutes = require("./routes/riderRoutes");
 const bikeRoutes = require("./routes/bikeRoutes");
 const enforcementRoutes = require("./routes/enforcementRoutes");
+const auditRoutes = require("./routes/auditRoutes");
 
 connectDB();
 
@@ -53,6 +54,7 @@ app.use("/api/syndicates", syndicateRoutes);
 app.use("/api/riders", riderRoutes);
 app.use("/api/bikes", bikeRoutes);
 app.use("/api/enforcement", enforcementRoutes);
+app.use("/api/audit-logs", auditRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

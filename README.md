@@ -72,6 +72,45 @@ Scan the QR code with Expo Go, or run `npm run android` / `npm run ios`.
 computer's LAN IP address if you're testing on a physical device (a
 phone can't reach your laptop's `localhost`).
 
+## Additional features
+
+**Password reset** — "Forgot password?" on the login page emails a
+time-limited reset link via Gmail SMTP. Requires two extra variables in
+`backend/.env`:
+
+```
+EMAIL_USER=your-real-gmail-address@gmail.com
+EMAIL_APP_PASSWORD=your16charapppassword
+```
+
+`EMAIL_APP_PASSWORD` is a Gmail **App Password** (Google Account →
+Security → 2-Step Verification → App Passwords), not your normal Gmail
+password. If these aren't set, the backend doesn't fail - it just
+prints the reset link to the server logs instead of emailing it, so
+local development without email configured still works. Also set
+`FRONTEND_URL` (e.g. `https://motosecure-web.onrender.com`) so the
+emailed link points at the right place.
+
+**Audit log** — every syndicate approval/rejection/suspension and
+every rider status change is recorded in an append-only `AuditLog`
+collection: who did it, what changed, and when. Visible under "Audit
+Log" in the sidebar for mayor/municipal_staff/super_admin only.
+
+**Syndicate-level data isolation** — a `syndicate_admin` only ever
+sees and edits their own union's riders, bikes, and syndicate record -
+not the rest of the council's data. Approve/reject/suspend actions on
+syndicates remain restricted to council-side roles, so a syndicate
+admin cannot self-approve.
+
+**Offline-first enforcement scanning** — the mobile app downloads a
+lightweight rider snapshot (`GET /api/riders/offline-snapshot`)
+whenever it's online, caching it locally. If a badge verification
+fails due to no connectivity, it falls back to that local cache,
+clearly labels the result as "last synced" rather than live, and
+queues the scan to sync automatically (`POST
+/api/enforcement/sync-scans`) the next time the app is back online.
+Incident reporting still requires a live connection.
+
 ## Demo / presentation data
 
 `npm run seed` (inside `backend/`) populates the database with a

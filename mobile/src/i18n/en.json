@@ -9,7 +9,10 @@
     "scanButton": "Scan a badge",
     "manualButton": "Enter badge ID manually",
     "recentTitle": "Recent scans",
-    "noRecent": "No scans yet today."
+    "noRecent": "No scans yet today.",
+    "pendingSync": "{{count}} scan(s) waiting to sync",
+    "pendingSync_one": "1 scan waiting to sync",
+    "pendingSync_other": "{{count}} scans waiting to sync"
   },
   "scan": {
     "title": "Scan badge",
@@ -38,7 +41,9 @@
     "done": "Done",
     "loading": "Checking badge…",
     "errorTitle": "Could not verify",
-    "errorBody": "Check your connection and try again."
+    "errorBody": "Check your connection and try again.",
+    "errorBodyOffline": "No connection, and this badge isn't in your last synced data. Check your connection and try again.",
+    "offlineNotice": "No connection - showing last synced result. This scan will sync automatically once you're back online."
   },
   "incident": {
     "title": "Report incident",

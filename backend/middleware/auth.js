@@ -101,10 +101,4 @@ const scopeToOwnSyndicateRecord = (req) => {
   return base;
 };
 
-module.exports = {
-  protect,
-  authorize,
-  scopeToTenant,
-  scopeToSyndicateData,
-  scopeToOwnSyndicateRecord,
-};
+module.exports = { protect, authorize, scopeToTenant, scopeToSyndicateData, scopeToOwnSyndicateRecord };

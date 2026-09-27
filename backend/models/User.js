@@ -46,6 +46,12 @@ const userSchema = new mongoose.Schema(
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date },
     preferredLanguage: { type: String, enum: ["en", "fr"], default: "en" },
+    // Password reset: we store a hash of the token, never the raw token
+    // itself, the same way we store a password hash rather than a
+    // plaintext password. The raw token only ever exists in the emailed
+    // link and briefly in the request body when the user submits it.
+    resetPasswordTokenHash: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
   },
   { timestamps: true }
 );

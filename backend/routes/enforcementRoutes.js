@@ -4,12 +4,7 @@ const Rider = require("../models/Rider");
 const Bike = require("../models/Bike");
 const Syndicate = require("../models/Syndicate");
 const EnforcementLog = require("../models/EnforcementLog");
-const {
-  protect,
-  authorize,
-  scopeToTenant,
-  scopeToSyndicateData,
-} = require("../middleware/auth");
+const { protect, authorize, scopeToTenant, scopeToSyndicateData } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -22,9 +17,7 @@ const router = express.Router();
  */
 const getSyndicateRiderIdFilter = async (req) => {
   if (req.user.role !== "syndicate_admin") return null;
-  const riderIds = await Rider.find({ ...scopeToSyndicateData(req) }).distinct(
-    "_id",
-  );
+  const riderIds = await Rider.find({ ...scopeToSyndicateData(req) }).distinct("_id");
   return riderIds;
 };
 
@@ -49,10 +42,8 @@ router.get(
 
     let result = "valid";
     if (rider.status === "suspended") result = "suspended";
-    else if (rider.status === "revoked" || rider.status === "under_review")
-      result = "flagged";
-    else if (rider.licenseExpiresAt && rider.licenseExpiresAt < new Date())
-      result = "expired";
+    else if (rider.status === "revoked" || rider.status === "under_review") result = "flagged";
+    else if (rider.licenseExpiresAt && rider.licenseExpiresAt < new Date()) result = "expired";
 
     rider.verificationCount += 1;
     rider.lastVerifiedAt = new Date();
@@ -82,7 +73,51 @@ router.get(
         licenseExpiresAt: rider.licenseExpiresAt,
       },
     });
-  }),
+  })
+);
+
+// POST /api/enforcement/sync-scans
+// Flushes a batch of verifications the mobile app performed offline
+// (against its locally cached rider snapshot) into the real
+// EnforcementLog once the officer's phone regains connectivity. Each
+// entry is tagged offline:true in its metadata so the timeline can
+// distinguish a live scan from a synced one. Silently skips any badge
+// ID that no longer resolves to a rider rather than failing the whole
+// batch - a stale local cache entry shouldn't block the rest of a sync.
+router.post(
+  "/sync-scans",
+  protect,
+  authorize("enforcement_officer", "municipal_staff", "mayor", "super_admin"),
+  asyncHandler(async (req, res) => {
+    const { scans } = req.body; // [{ badgeId, result, scannedAt }, ...]
+    if (!Array.isArray(scans) || scans.length === 0) {
+      return res.json({ success: true, synced: 0, skipped: 0 });
+    }
+
+    let synced = 0;
+    let skipped = 0;
+
+    for (const scan of scans) {
+      const rider = await Rider.findOne({ badgeId: scan.badgeId });
+      if (!rider) {
+        skipped += 1;
+        continue;
+      }
+      await EnforcementLog.create({
+        tenant: rider.tenant,
+        rider: rider._id,
+        bike: rider.bike,
+        officer: req.user._id,
+        type: "verification",
+        result: scan.result || "valid",
+        createdAt: scan.scannedAt ? new Date(scan.scannedAt) : new Date(),
+        location: { label: "Offline scan (synced later)" },
+      });
+      synced += 1;
+    }
+
+    res.json({ success: true, synced, skipped });
+  })
 );
 
 // POST /api/enforcement/incident - log an incident / warning / impound
@@ -115,7 +150,7 @@ router.post(
     await rider.save();
 
     res.status(201).json({ success: true, log });
-  }),
+  })
 );
 
 // GET /api/enforcement/logs
@@ -133,9 +168,7 @@ router.get(
     if (syndicateRiderIds) {
       // Intersect with any explicit ?rider= filter rather than blindly
       // overwriting it.
-      filter.rider = req.query.rider
-        ? req.query.rider
-        : { $in: syndicateRiderIds };
+      filter.rider = req.query.rider ? req.query.rider : { $in: syndicateRiderIds };
     }
 
     const logs = await EnforcementLog.find(filter)
@@ -145,7 +178,7 @@ router.get(
       .limit(parseInt(req.query.limit, 10) || 100);
 
     res.json({ success: true, count: logs.length, logs });
-  }),
+  })
 );
 
 // GET /api/enforcement/stats - roll-up numbers for the dashboard
@@ -156,9 +189,7 @@ router.get(
   protect,
   asyncHandler(async (req, res) => {
     const isSyndicateAdmin = req.user.role === "syndicate_admin";
-    const riderBikeFilter = isSyndicateAdmin
-      ? scopeToSyndicateData(req)
-      : scopeToTenant(req);
+    const riderBikeFilter = isSyndicateAdmin ? scopeToSyndicateData(req) : scopeToTenant(req);
     const tenantFilter = scopeToTenant(req);
 
     let totalSyndicates = 0;
@@ -185,13 +216,12 @@ router.get(
       incidentFilter.rider = { $in: syndicateRiderIds };
     }
 
-    const [totalRiders, activeRiders, totalBikes, incidents30d] =
-      await Promise.all([
-        Rider.countDocuments(riderBikeFilter),
-        Rider.countDocuments({ ...riderBikeFilter, status: "active" }),
-        Bike.countDocuments(riderBikeFilter),
-        EnforcementLog.countDocuments(incidentFilter),
-      ]);
+    const [totalRiders, activeRiders, totalBikes, incidents30d] = await Promise.all([
+      Rider.countDocuments(riderBikeFilter),
+      Rider.countDocuments({ ...riderBikeFilter, status: "active" }),
+      Bike.countDocuments(riderBikeFilter),
+      EnforcementLog.countDocuments(incidentFilter),
+    ]);
 
     res.json({
       success: true,
@@ -204,7 +234,7 @@ router.get(
         incidents30d,
       },
     });
-  }),
+  })
 );
 
 module.exports = router;

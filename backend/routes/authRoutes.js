@@ -1,9 +1,11 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const Tenant = require("../models/Tenant");
 const { protect } = require("../middleware/auth");
+const { sendEmail } = require("../lib/sendEmail");
 
 const router = express.Router();
 
@@ -102,6 +104,99 @@ router.post(
       user: user.toSafeJSON(),
       syndicate,
     });
+  })
+);
+
+// POST /api/auth/forgot-password
+// Always responds with the same success message whether or not the
+// email exists, so this endpoint can't be used to discover which
+// emails are registered on the platform.
+router.post(
+  "/forgot-password",
+  asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400);
+      throw new Error("Email is required");
+    }
+
+    const genericResponse = {
+      success: true,
+      message: "If an account exists for that email, a reset link has been sent.",
+    };
+
+    const user = await User.findOne({ email: email.toLowerCase(), isActive: true });
+    if (!user) {
+      return res.json(genericResponse);
+    }
+
+    // Raw token goes in the email link; only its hash is stored, so a
+    // database leak alone can never be used to reset someone's password.
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordTokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${rawToken}&email=${encodeURIComponent(
+      user.email
+    )}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset your MotoSecure password",
+      text: `We received a request to reset your MotoSecure password. This link expires in 1 hour:\n\n${resetUrl}\n\nIf you didn't request this, you can safely ignore this email.`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+          <h2 style="color:#0A1628;">Reset your MotoSecure password</h2>
+          <p>We received a request to reset the password for <strong>${user.email}</strong>.</p>
+          <p>This link expires in <strong>1 hour</strong>.</p>
+          <p style="margin: 24px 0;">
+            <a href="${resetUrl}" style="background:#F5A623;color:#0A1628;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:bold;">
+              Reset password
+            </a>
+          </p>
+          <p style="color:#5A6B8C;font-size:13px;">If you didn't request this, you can safely ignore this email - your password will not change.</p>
+        </div>
+      `,
+    });
+
+    res.json(genericResponse);
+  })
+);
+
+// POST /api/auth/reset-password
+router.post(
+  "/reset-password",
+  asyncHandler(async (req, res) => {
+    const { email, token, newPassword } = req.body;
+    if (!email || !token || !newPassword) {
+      res.status(400);
+      throw new Error("Email, token and newPassword are required");
+    }
+    if (newPassword.length < 8) {
+      res.status(400);
+      throw new Error("Password must be at least 8 characters");
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      resetPasswordTokenHash: tokenHash,
+      resetPasswordExpires: { $gt: new Date() },
+    }).select("+resetPasswordTokenHash +resetPasswordExpires");
+
+    if (!user) {
+      res.status(400);
+      throw new Error("This reset link is invalid or has expired. Please request a new one.");
+    }
+
+    await user.setPassword(newPassword);
+    user.resetPasswordTokenHash = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ success: true, message: "Password has been reset. You can now sign in." });
   })
 );
 

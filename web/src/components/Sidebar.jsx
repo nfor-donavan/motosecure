@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Logo from "./Logo";
+import { useAuth } from "../context/AuthContext";
 import {
   IconDashboard,
   IconUnion,
@@ -8,9 +9,12 @@ import {
   IconBike,
   IconShield,
   IconClose,
+  IconAlert,
 } from "./icons";
 
-const items = [
+const COUNCIL_ROLES = ["mayor", "municipal_staff", "super_admin"];
+
+const baseItems = [
   { to: "/app", label: "nav.dashboard", icon: IconDashboard, end: true },
   { to: "/app/syndicates", label: "nav.syndicates", icon: IconUnion },
   { to: "/app/riders", label: "nav.riders", icon: IconRider },
@@ -18,8 +22,12 @@ const items = [
   { to: "/app/enforcement", label: "nav.enforcement", icon: IconShield },
 ];
 
+const auditItem = { to: "/app/audit-log", label: "nav.auditLog", icon: IconAlert };
+
 export default function Sidebar({ open, onClose }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const items = COUNCIL_ROLES.includes(user?.role) ? [...baseItems, auditItem] : baseItems;
 
   return (
     <>

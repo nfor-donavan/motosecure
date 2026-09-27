@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider, useTheme } from "./src/theme/ThemeContext";
 import { AuthProvider } from "./src/lib/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
@@ -20,11 +21,13 @@ export default function App() {
   if (!ready) return null;
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <StatusBarBridge />
-        <RootNavigator />
-      </AuthProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <StatusBarBridge />
+          <RootNavigator />
+        </AuthProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

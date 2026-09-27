@@ -9,7 +9,9 @@
     "scanButton": "Scanner un badge",
     "manualButton": "Saisir l'ID du badge",
     "recentTitle": "Scans récents",
-    "noRecent": "Aucun scan effectué aujourd'hui."
+    "noRecent": "Aucun scan effectué aujourd'hui.",
+    "pendingSync_one": "1 scan en attente de synchronisation",
+    "pendingSync_other": "{{count}} scans en attente de synchronisation"
   },
   "scan": {
     "title": "Scanner le badge",
@@ -38,7 +40,9 @@
     "done": "Terminé",
     "loading": "Vérification du badge…",
     "errorTitle": "Vérification impossible",
-    "errorBody": "Vérifiez votre connexion et réessayez."
+    "errorBody": "Vérifiez votre connexion et réessayez.",
+    "errorBodyOffline": "Aucune connexion, et ce badge ne figure pas dans vos données synchronisées. Vérifiez votre connexion et réessayez.",
+    "offlineNotice": "Aucune connexion - affichage du dernier résultat synchronisé. Ce scan sera synchronisé automatiquement dès le retour de la connexion."
   },
   "incident": {
     "title": "Signaler un incident",

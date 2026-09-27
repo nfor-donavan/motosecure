@@ -1,12 +1,8 @@
 const express = require("express");
 const asyncHandler = require("express-async-handler");
 const Syndicate = require("../models/Syndicate");
-const {
-  protect,
-  authorize,
-  scopeToTenant,
-  scopeToOwnSyndicateRecord,
-} = require("../middleware/auth");
+const { protect, authorize, scopeToTenant, scopeToOwnSyndicateRecord } = require("../middleware/auth");
+const { recordAudit } = require("../lib/audit");
 
 const router = express.Router();
 
@@ -32,7 +28,7 @@ router.get(
     if (req.query.status) filter.status = req.query.status;
     const syndicates = await Syndicate.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, count: syndicates.length, syndicates });
-  }),
+  })
 );
 
 // GET /api/syndicates/:id
@@ -40,16 +36,13 @@ router.get(
   "/:id",
   protect,
   asyncHandler(async (req, res) => {
-    const syndicate = await Syndicate.findOne({
-      _id: req.params.id,
-      ...scopeToOwnSyndicateRecord(req),
-    });
+    const syndicate = await Syndicate.findOne({ _id: req.params.id, ...scopeToOwnSyndicateRecord(req) });
     if (!syndicate) {
       res.status(404);
       throw new Error("Syndicate not found");
     }
     res.json({ success: true, syndicate });
-  }),
+  })
 );
 
 // POST /api/syndicates (mayor / municipal_staff manually enroll a syndicate)
@@ -58,12 +51,15 @@ router.post(
   protect,
   authorize("mayor", "municipal_staff", "super_admin"),
   asyncHandler(async (req, res) => {
-    const syndicate = await Syndicate.create({
-      ...req.body,
-      tenant: req.tenantId || req.body.tenant,
+    const syndicate = await Syndicate.create({ ...req.body, tenant: req.tenantId || req.body.tenant });
+    await recordAudit(req, {
+      action: "syndicate.created",
+      targetType: "Syndicate",
+      targetId: syndicate._id,
+      targetLabel: syndicate.name,
     });
     res.status(201).json({ success: true, syndicate });
-  }),
+  })
 );
 
 // PATCH /api/syndicates/:id/status  - approve / reject / suspend
@@ -75,17 +71,29 @@ router.patch(
   authorize("mayor", "municipal_staff", "super_admin"),
   asyncHandler(async (req, res) => {
     const { status, notes } = req.body;
-    const syndicate = await Syndicate.findOneAndUpdate(
-      { _id: req.params.id, ...scopeToTenant(req) },
-      { status, ...(notes && { notes }) },
-      { new: true, runValidators: true },
-    );
-    if (!syndicate) {
+    const before = await Syndicate.findOne({ _id: req.params.id, ...scopeToTenant(req) });
+    if (!before) {
       res.status(404);
       throw new Error("Syndicate not found");
     }
+    const previousStatus = before.status;
+
+    const syndicate = await Syndicate.findOneAndUpdate(
+      { _id: req.params.id, ...scopeToTenant(req) },
+      { status, ...(notes && { notes }) },
+      { new: true, runValidators: true }
+    );
+
+    await recordAudit(req, {
+      action: `syndicate.${status}`,
+      targetType: "Syndicate",
+      targetId: syndicate._id,
+      targetLabel: syndicate.name,
+      metadata: { from: previousStatus, to: status, notes: notes || undefined },
+    });
+
     res.json({ success: true, syndicate });
-  }),
+  })
 );
 
 // PATCH /api/syndicates/:id
@@ -108,14 +116,14 @@ router.patch(
     const syndicate = await Syndicate.findOneAndUpdate(
       { _id: req.params.id, ...scopeToOwnSyndicateRecord(req) },
       updates,
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
     if (!syndicate) {
       res.status(404);
       throw new Error("Syndicate not found");
     }
     res.json({ success: true, syndicate });
-  }),
+  })
 );
 
 module.exports = router;

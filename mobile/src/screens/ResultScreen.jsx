@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme/ThemeContext";
 import { palette } from "../theme/colors";
 import api from "../lib/api";
 import StatusPill from "../components/StatusPill";
 import { pushRecentScan } from "./HomeScreen";
+import { lookupInSnapshot, resolveOfflineResult, queueOfflineScan } from "../lib/offlineCache";
 
 const RESULT_TONE = {
   valid: { bg: palette.emeraldBg, fg: palette.emerald },
@@ -22,9 +24,40 @@ export default function ResultScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [data, setData] = useState(null);
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
     let mounted = true;
+
+    const tryOfflineFallback = async () => {
+      const cached = await lookupInSnapshot(badgeId);
+      if (!cached) {
+        if (mounted) setError(true);
+        return;
+      }
+
+      const result = resolveOfflineResult(cached);
+      const offlineData = {
+        result,
+        rider: {
+          badgeId: cached.badgeId,
+          fullName: cached.fullName,
+          status: cached.status,
+          syndicate: cached.syndicateName ? { name: cached.syndicateName } : null,
+          bike: cached.bikePlate ? { plateNumber: cached.bikePlate } : null,
+          licenseExpiresAt: cached.licenseExpiresAt,
+        },
+      };
+
+      await queueOfflineScan({ badgeId, result });
+      await pushRecentScan({ badgeId, fullName: cached.fullName, result });
+
+      if (mounted) {
+        setData(offlineData);
+        setIsOffline(true);
+      }
+    };
+
     api
       .get(`/enforcement/verify/${encodeURIComponent(badgeId)}`)
       .then(async ({ data: res }) => {
@@ -36,8 +69,9 @@ export default function ResultScreen({ route, navigation }) {
           result: res.result,
         });
       })
-      .catch(() => mounted && setError(true))
+      .catch(tryOfflineFallback)
       .finally(() => mounted && setLoading(false));
+
     return () => {
       mounted = false;
     };
@@ -56,7 +90,7 @@ export default function ResultScreen({ route, navigation }) {
     return (
       <SafeAreaView style={[styles.safe, styles.center, { backgroundColor: theme.background }]}>
         <Text style={[styles.title, { color: theme.text }]}>{t("result.errorTitle")}</Text>
-        <Text style={[styles.subtitle, { color: theme.textMuted }]}>{t("result.errorBody")}</Text>
+        <Text style={[styles.subtitle, { color: theme.textMuted }]}>{t("result.errorBodyOffline")}</Text>
         <DoneButton theme={theme} t={t} navigation={navigation} />
       </SafeAreaView>
     );
@@ -71,6 +105,14 @@ export default function ResultScreen({ route, navigation }) {
         <View style={[styles.bannerDot, { backgroundColor: tone.fg }]} />
         <Text style={[styles.bannerText, { color: tone.fg }]}>{t(`result.${data.result}`)}</Text>
       </View>
+
+      {isOffline && (
+        <View style={[styles.offlineNotice, { backgroundColor: theme.surfaceAlt, borderColor: theme.border }]}>
+          <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "600" }}>
+            {t("result.offlineNotice")}
+          </Text>
+        </View>
+      )}
 
       {rider ? (
         <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
@@ -98,7 +140,7 @@ export default function ResultScreen({ route, navigation }) {
       )}
 
       <View style={styles.actions}>
-        {rider && (
+        {rider && !isOffline && (
           <TouchableOpacity
             style={[styles.secondaryButton, { borderColor: theme.border }]}
             onPress={() => navigation.navigate("Incident", { riderId: rider.id, riderName: rider.fullName })}
@@ -149,6 +191,7 @@ const styles = StyleSheet.create({
   },
   bannerDot: { width: 10, height: 10, borderRadius: 5 },
   bannerText: { fontSize: 16, fontWeight: "800" },
+  offlineNotice: { borderWidth: 1, borderRadius: 12, padding: 10, marginTop: 10 },
   card: { borderWidth: 1, borderRadius: 20, padding: 18, marginTop: 16, gap: 14 },
   name: { fontSize: 19, fontWeight: "800" },
   badge: { fontSize: 12, marginTop: 2 },

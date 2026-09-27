@@ -9,6 +9,7 @@
     "riders": "Conducteurs",
     "bikes": "Motos",
     "enforcement": "Journal de contrôle",
+    "auditLog": "Journal d'audit",
     "settings": "Paramètres",
     "logout": "Se déconnecter"
   },
@@ -61,7 +62,23 @@
     "phone": "Votre numéro de téléphone",
     "submit": "Soumettre l'inscription",
     "submitting": "Envoi en cours…",
-    "registerSuccess": "Inscription soumise. En attente d'approbation de la mairie."
+    "registerSuccess": "Inscription soumise. En attente d'approbation de la mairie.",
+    "forgotLink": "Mot de passe oublié ?",
+    "forgotTitle": "Réinitialiser votre mot de passe",
+    "forgotSubtitle": "Entrez l'e-mail de votre compte et nous vous enverrons un lien de réinitialisation.",
+    "forgotSubmit": "Envoyer le lien",
+    "forgotSubmitting": "Envoi en cours…",
+    "forgotSent": "Si un compte existe pour cet e-mail, un lien de réinitialisation a été envoyé. Vérifiez votre boîte de réception.",
+    "backToLogin": "Retour à la connexion",
+    "resetTitle": "Choisissez un nouveau mot de passe",
+    "resetNewPassword": "Nouveau mot de passe",
+    "resetConfirmPassword": "Confirmer le nouveau mot de passe",
+    "resetSubmit": "Réinitialiser le mot de passe",
+    "resetSubmitting": "Réinitialisation…",
+    "resetSuccess": "Mot de passe réinitialisé. Redirection vers la connexion…",
+    "resetInvalidLink": "Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau.",
+    "resetMismatch": "Les mots de passe ne correspondent pas.",
+    "resetTooShort": "Le mot de passe doit contenir au moins 8 caractères."
   },
   "dashboard": {
     "welcome": "Bon retour",
@@ -138,6 +155,15 @@
     "resultSuspended": "Suspendu",
     "resultFlagged": "Signalé",
     "resultNotFound": "Introuvable"
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "subtitle": "Chaque action administrative effectuée sur le compte de cette mairie, avec l'auteur et la date.",
+    "action": "Action",
+    "target": "Cible",
+    "actor": "Effectué par",
+    "details": "Détails",
+    "date": "Date"
   },
   "common": {
     "loading": "Chargement…",

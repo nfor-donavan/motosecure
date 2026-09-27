@@ -9,6 +9,7 @@
     "riders": "Riders",
     "bikes": "Bikes",
     "enforcement": "Enforcement Log",
+    "auditLog": "Audit Log",
     "settings": "Settings",
     "logout": "Log out"
   },
@@ -61,7 +62,23 @@
     "phone": "Your phone number",
     "submit": "Submit enrollment",
     "submitting": "Submitting…",
-    "registerSuccess": "Enrollment submitted. Awaiting municipal approval."
+    "registerSuccess": "Enrollment submitted. Awaiting municipal approval.",
+    "forgotLink": "Forgot password?",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "Enter your account email and we'll send you a link to reset it.",
+    "forgotSubmit": "Send reset link",
+    "forgotSubmitting": "Sending…",
+    "forgotSent": "If an account exists for that email, a reset link has been sent. Check your inbox.",
+    "backToLogin": "Back to sign in",
+    "resetTitle": "Choose a new password",
+    "resetNewPassword": "New password",
+    "resetConfirmPassword": "Confirm new password",
+    "resetSubmit": "Reset password",
+    "resetSubmitting": "Resetting…",
+    "resetSuccess": "Password has been reset. Redirecting to sign in…",
+    "resetInvalidLink": "This reset link is invalid or has expired. Please request a new one.",
+    "resetMismatch": "Passwords do not match.",
+    "resetTooShort": "Password must be at least 8 characters."
   },
   "dashboard": {
     "welcome": "Welcome back",
@@ -138,6 +155,15 @@
     "resultSuspended": "Suspended",
     "resultFlagged": "Flagged",
     "resultNotFound": "Not found"
+  },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "Every administrative action taken on this council's account, with who did it and when.",
+    "action": "Action",
+    "target": "Target",
+    "actor": "Performed by",
+    "details": "Details",
+    "date": "Date"
   },
   "common": {
     "loading": "Loading…",

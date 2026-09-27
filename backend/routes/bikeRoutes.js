@@ -2,11 +2,7 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const Bike = require("../models/Bike");
 const Rider = require("../models/Rider");
-const {
-  protect,
-  authorize,
-  scopeToSyndicateData,
-} = require("../middleware/auth");
+const { protect, authorize, scopeToSyndicateData } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -23,11 +19,9 @@ router.get(
       filter.syndicate = req.query.syndicate;
     }
     if (req.query.status) filter.status = req.query.status;
-    const bikes = await Bike.find(filter)
-      .populate("rider", "fullName badgeId")
-      .sort({ createdAt: -1 });
+    const bikes = await Bike.find(filter).populate("rider", "fullName badgeId").sort({ createdAt: -1 });
     res.json({ success: true, count: bikes.length, bikes });
-  }),
+  })
 );
 
 // POST /api/bikes
@@ -47,7 +41,7 @@ router.post(
       await Rider.findByIdAndUpdate(bike.rider, { bike: bike._id });
     }
     res.status(201).json({ success: true, bike });
-  }),
+  })
 );
 
 // PATCH /api/bikes/:id
@@ -66,14 +60,14 @@ router.patch(
     const bike = await Bike.findOneAndUpdate(
       { _id: req.params.id, ...scopeToSyndicateData(req) },
       updates,
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
     if (!bike) {
       res.status(404);
       throw new Error("Bike not found");
     }
     res.json({ success: true, bike });
-  }),
+  })
 );
 
 module.exports = router;

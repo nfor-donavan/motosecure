@@ -79,6 +79,13 @@ export default function Login() {
                 autoComplete="current-password"
               />
 
+              <Link
+                to="/forgot-password"
+                className="-mt-2 inline-block text-xs font-semibold text-navy-500 hover:text-navy-800 dark:text-navy-400 dark:hover:text-gold-400"
+              >
+                {t("auth.forgotLink")}
+              </Link>
+
               {error && (
                 <p className="rounded-lg bg-rose-50 dark:bg-rose-500/10 px-3 py-2 text-sm text-rose-600 dark:text-rose-400">
                   {error}
