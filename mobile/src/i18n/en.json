@@ -20,7 +20,10 @@
     "permissionTitle": "Camera access needed",
     "permissionBody": "MotoSecure needs your camera to scan rider badges.",
     "grantPermission": "Grant camera access",
-    "scanAgain": "Scan again"
+    "scanAgain": "Scan again",
+    "checkingPermission": "Checking camera permission…",
+    "startingCamera": "Starting camera…",
+    "enterManually": "Enter ID manually"
   },
   "manual": {
     "title": "Enter badge ID",

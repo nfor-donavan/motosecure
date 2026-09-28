@@ -19,7 +19,10 @@
     "permissionTitle": "Accès à la caméra requis",
     "permissionBody": "MotoSecure a besoin de la caméra pour scanner les badges des conducteurs.",
     "grantPermission": "Autoriser la caméra",
-    "scanAgain": "Scanner à nouveau"
+    "scanAgain": "Scanner à nouveau",
+    "checkingPermission": "Vérification de l'accès à la caméra…",
+    "startingCamera": "Démarrage de la caméra…",
+    "enterManually": "Saisir l'ID manuellement"
   },
   "manual": {
     "title": "Saisir l'ID du badge",
