@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "../lib/api";
@@ -28,6 +28,22 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [councils, setCouncils] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/tenants/public")
+      .then(({ data }) => {
+        setCouncils(data.tenants);
+        if (data.tenants.length > 0) {
+          setForm((f) => ({
+            ...f,
+            tenantSlug: data.tenants.some((c) => c.slug === f.tenantSlug) ? f.tenantSlug : data.tenants[0].slug,
+          }));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -75,7 +91,18 @@ export default function Register() {
           ) : (
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <Section title={t("auth.councilSlug")}>
-                <Field label={t("auth.councilSlug")} value={form.tenantSlug} onChange={update("tenantSlug")} required />
+                <select
+                  value={form.tenantSlug}
+                  onChange={update("tenantSlug")}
+                  required
+                  className="w-full rounded-xl border border-navy-200 dark:border-navy-700 bg-white dark:bg-navy-900 px-3.5 py-2.5 text-sm text-navy-900 dark:text-white focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                >
+                  {councils.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.name} ({c.region})
+                    </option>
+                  ))}
+                </select>
               </Section>
 
               <Section title={t("syndicates.title")}>

@@ -53,7 +53,7 @@
     "invalidCredentials": "Invalid email or password.",
     "registerTitle": "Syndicate enrollment",
     "registerSubtitle": "Register your union with your municipality. An administrator will review your application.",
-    "councilSlug": "Municipality code",
+    "councilSlug": "Municipality",
     "syndicateName": "Syndicate / union name",
     "zone": "Operating zone",
     "presidentName": "Union president's name",

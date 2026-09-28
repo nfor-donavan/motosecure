@@ -64,7 +64,7 @@ router.post(
     const { tenantSlug, syndicateName, zone, presidentName, presidentPhone, adminFullName, email, phone, password } =
       req.body;
 
-    const tenant = await Tenant.findOne({ slug: tenantSlug });
+    const tenant = await Tenant.findOne({ slug: String(tenantSlug || "").trim().toLowerCase() });
     if (!tenant) {
       res.status(404);
       throw new Error("Municipality not found");

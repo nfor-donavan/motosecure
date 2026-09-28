@@ -16,6 +16,18 @@ router.get(
   })
 );
 
+// GET /api/tenants/public - public list of councils open to enrollment,
+// used by the syndicate enrollment form's municipality dropdown.
+router.get(
+  "/public",
+  asyncHandler(async (req, res) => {
+    const tenants = await Tenant.find({ status: { $ne: "suspended" } })
+      .select("name slug region")
+      .sort({ name: 1 });
+    res.json({ success: true, tenants });
+  })
+);
+
 // GET /api/tenants/lookup/:slug - public, used by enrollment portal to resolve a council
 router.get(
   "/lookup/:slug",
