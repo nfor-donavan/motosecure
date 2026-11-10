@@ -1,19 +1,33 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Point this at your deployed MotoSecure API. For local development on a
-// physical device using Expo Go, use your machine's LAN IP instead of
-// localhost. For EAS preview/production builds, this must be a real,
-// publicly reachable URL (a device can never reach your laptop's
-// localhost), so it's set to the live Render deployment.
+// Public URL of the deployed MotoSecure API.
 const BASE_URL = "https://motosecure-api.onrender.com/api";
 
-const api = axios.create({ baseURL: BASE_URL });
+// A request that has not completed in this time is treated as a network
+// failure, so a weak connection falls back to offline mode instead of
+// leaving the officer watching a spinner.
+const api = axios.create({ baseURL: BASE_URL, timeout: 12000 });
+
+let onUnauthorized = null;
+/** Registered by AuthProvider so an expired session returns to the login screen. */
+export const setUnauthorizedHandler = (fn) => {
+  onUnauthorized = fn;
+};
 
 api.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem("motosecure-token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    // Only treat a 401 on an authenticated request as "session expired".
+    if (err.response?.status === 401 && err.config?.headers?.Authorization && onUnauthorized) onUnauthorized();
+    return Promise.reject(err);
+  }
+);
 
 export default api;

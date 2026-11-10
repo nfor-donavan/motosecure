@@ -39,7 +39,7 @@ motosecure/
 cd backend
 cp .env.example .env      # then edit MONGO_URI, JWT_SECRET, etc.
 npm install
-npm run seed               # populates rich demo data (see below)
+npm run seed -- --confirm-wipe               # populates rich demo data (see below)
 npm run dev                 # starts on http://localhost:5000
 ```
 
@@ -113,7 +113,7 @@ Incident reporting still requires a live connection.
 
 ## Demo / presentation data
 
-`npm run seed` (inside `backend/`) populates the database with a
+`npm run seed -- --confirm-wipe` (inside `backend/`) populates the database with a
 realistic, ready-to-present dataset:
 
 - **3 municipalities**: Buea (South West, fully populated & active —
@@ -142,7 +142,7 @@ remember for a live pitch (all for the **Buea** council):
 | Enforcement officer | `officer@buea.cm` | `Officer123!` |
 | Platform super admin | `admin@motosecure.cm` | value of `SEED_SUPERADMIN_PASSWORD` in `.env` |
 
-Run `npm run seed` again any time to reset to a fresh dataset.
+Run `npm run seed -- --confirm-wipe` again any time to reset to a fresh dataset.
 
 ## Design & UX
 
@@ -175,3 +175,34 @@ Run `npm run seed` again any time to reset to a fresh dataset.
 - Review the `roles` in `backend/models/User.js` and adjust route
   permissions in `backend/middleware/auth.js` to match your council's
   exact governance structure before rollout.
+
+
+## Testing and security checks
+
+From `backend/`:
+
+```bash
+npm install
+npm run test:unit          # pure-logic tests and real middleware with stubs; no database needed
+npm run test:integration   # HTTP-level authorization / tenant-isolation tests (in-memory MongoDB)
+npm test                   # both
+npm run check:static       # project-specific static scan + route inventory (exit 1 on any high finding)
+npm run audit:deps         # dependency advisories (also run in web/ and mobile/)
+```
+
+The integration suite starts an isolated in-memory MongoDB, or uses `TEST_MONGO_URI` if set; that
+database name **must contain "test"** or the harness refuses to run. Never point it at real data.
+
+## Security review, documentation and branding
+
+A security and engineering review was carried out on 2 November 2026. Its documents are in `docs/`
+(DOCX and PDF): System Architecture Document, Software Requirements Specification, Security,
+Privacy and Governance Policy, and Security Assessment Report. See `docs/README.md` for the index
+and `docs/REVIEW_CHANGES.md` for every file changed. Recorded evidence is in `docs/evidence/`.
+
+MotoSecure is presented as **a NEXUS Tech Labs product**: the credit appears on the landing page,
+sign-in page, dashboard sidebar and mobile sign-in/settings screens.
+
+**Demo accounts:** the seed script creates accounts with publicly documented passwords. They must
+never exist in a pilot or production database. The web login page lists demo accounts only if
+`VITE_DEMO_ACCOUNTS` is supplied at build time.

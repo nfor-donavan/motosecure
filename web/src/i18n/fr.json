@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "MotoSecure",
-    "tagline": "Conducteurs en sécurité · Transport intelligent · Cameroun renforcé"
+    "tagline": "Conducteurs en sécurité · Transport intelligent · Cameroun renforcé",
+    "poweredBy": "Un produit NEXUS Tech Labs"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -19,9 +20,9 @@
     "heroSubtitle": "MotoSecure offre aux maires, syndicats et agents de contrôle un système unique et fiable pour enregistrer les conducteurs, suivre la conformité et réagir aux incidents dans toute la commune.",
     "ctaPrimary": "Accéder à votre tableau de bord",
     "ctaSecondary": "Enregistrer un syndicat",
-    "statRiders": "conducteurs vérifiables en quelques secondes",
-    "statCouncils": "communes prêtes à rejoindre la plateforme",
-    "statUptime": "disponibilité de la plateforme",
+    "statRiders": "vérification de badge, avec mode hors ligne",
+    "statCouncils": "bilingue sur le web et le mobile",
+    "statUptime": "données séparées pour chaque commune",
     "pillarsTitle": "Trois interfaces, une seule source de vérité",
     "pillarMayorTitle": "Tableau de bord municipal",
     "pillarMayorDesc": "Une vue en direct de chaque syndicat, conducteur et moto sous votre autorité, avec alertes de conformité et historique des incidents.",
@@ -37,7 +38,13 @@
     "how3Title": "L'agent scanne",
     "how3Desc": "Un scan du badge QR renvoie un verdict en direct : valide, expiré ou signalé.",
     "footerRights": "Tous droits réservés.",
-    "footerBuilt": "Conçu pour les autorités municipales du Cameroun."
+    "footerBuilt": "Conçu pour les autorités municipales du Cameroun.",
+    "statValue1": "QR",
+    "statValue2": "FR · EN",
+    "statValue3": "Multi-communes",
+    "sampleBadge": "Données d'exemple",
+    "sampleScan": "Exemple de résultat",
+    "sampleScanSub": "Écran illustratif"
   },
   "auth": {
     "loginTitle": "Connexion",

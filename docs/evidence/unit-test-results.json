@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-11-07T11:46:05.417Z",
+  "node": "v22.22.2",
+  "suites": {
+    "unit": {
+      "tests": 51,
+      "pass": 51,
+      "fail": 0,
+      "skipped": 0,
+      "files": {
+        "config.test.js": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "skipped": 0
+        },
+        "middleware.test.js": {
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "skipped": 0
+        },
+        "policy.test.js": {
+          "tests": 20,
+          "pass": 20,
+          "fail": 0,
+          "skipped": 0
+        },
+        "validate.test.js": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "skipped": 0
+        },
+        "verdict.test.js": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "skipped": 0
+        }
+      }
+    }
+  }
+}

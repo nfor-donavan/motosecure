@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "MotoSecure",
-    "subtitle": "Enforcement"
+    "subtitle": "Enforcement",
+    "poweredBy": "A NEXUS Tech Labs product"
   },
   "home": {
     "greeting": "Enforcement console",
@@ -46,7 +47,8 @@
     "errorTitle": "Could not verify",
     "errorBody": "Check your connection and try again.",
     "errorBodyOffline": "No connection, and this badge isn't in your last synced data. Check your connection and try again.",
-    "offlineNotice": "No connection - showing last synced result. This scan will sync automatically once you're back online."
+    "offlineNotice": "No connection - showing last synced result. This scan will sync automatically once you're back online.",
+    "offlineAsOf": "Data as of {{date}}."
   },
   "incident": {
     "title": "Report incident",
@@ -71,8 +73,7 @@
     "password": "Password",
     "signIn": "Sign in",
     "signingIn": "Signing in…",
-    "invalidCredentials": "Invalid email or password.",
-    "demoHint": "Demo: officer@buea.cm / Officer123!"
+    "invalidCredentials": "Invalid email or password."
   },
   "settings": {
     "title": "Settings",

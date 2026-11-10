@@ -39,8 +39,22 @@ const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const daysAgo = (n) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
 
+const AuditLogCollectionName = "auditlogs";
+
+// SAFETY: this script DELETES every collection it seeds. It must never be
+// pointed at a database that holds real data, and it refuses to run
+// unless the operator explicitly confirms.
+if (!process.argv.includes("--confirm-wipe")) {
+  console.error("\n[seed] Refusing to run: this script WIPES the target database.");
+  console.error("[seed] Re-run with:  npm run seed -- --confirm-wipe");
+  console.error("[seed] The accounts it creates use publicly documented demo passwords.\n");
+  process.exit(1);
+}
+
 const run = async () => {
   await connectDB();
+  console.log(`[seed] TARGET DATABASE: ${mongoose.connection.host} / ${mongoose.connection.name}`);
+  console.log("[seed] DEMO DATA ONLY: never seed a database that holds real data.");
   console.log("[seed] Clearing existing collections...");
   await Promise.all([
     Tenant.deleteMany({}),
@@ -49,6 +63,8 @@ const run = async () => {
     Rider.deleteMany({}),
     Bike.deleteMany({}),
     EnforcementLog.deleteMany({}),
+    // The AuditLog model is append-only, so clear it through the raw driver.
+    mongoose.connection.collection(AuditLogCollectionName).deleteMany({}),
   ]);
 
   console.log("[seed] Creating super admin...");
@@ -57,7 +73,8 @@ const run = async () => {
     email: process.env.SEED_SUPERADMIN_EMAIL || "admin@motosecure.cm",
     role: "super_admin",
   });
-  await superAdmin.setPassword(process.env.SEED_SUPERADMIN_PASSWORD || "ChangeMe123!");
+  const generatedAdminPassword = process.env.SEED_SUPERADMIN_PASSWORD ? null : require("crypto").randomBytes(9).toString("base64url") + "7a";
+  await superAdmin.setPassword(process.env.SEED_SUPERADMIN_PASSWORD || generatedAdminPassword);
   await superAdmin.save();
 
   const councilDefs = [
@@ -101,7 +118,7 @@ const run = async () => {
   ];
 
   const demoCredentials = [
-    `  super_admin                    admin@motosecure.cm / (see .env SEED_SUPERADMIN_PASSWORD)`,
+    `  super_admin                    admin@motosecure.cm / ${generatedAdminPassword || "(value of SEED_SUPERADMIN_PASSWORD)"}`,
   ];
 
   let totalRiders = 0;

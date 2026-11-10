@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import Logo from "../components/Logo";
+import PoweredBy from "../components/PoweredBy";
 import ThemeToggle from "../components/ThemeToggle";
 import LanguageToggle from "../components/LanguageToggle";
 import { IconDashboard, IconUnion, IconShield, IconChevronRight } from "../components/icons";
@@ -101,9 +102,9 @@ export default function Landing() {
               custom={3}
               className="mt-12 grid grid-cols-3 gap-6 border-t border-navy-100 dark:border-navy-800 pt-8"
             >
-              <Stat value="10,000+" label={t("landing.statRiders")} />
-              <Stat value="15+" label={t("landing.statCouncils")} />
-              <Stat value="99.9%" label={t("landing.statUptime")} />
+              <Stat value={t("landing.statValue1")} label={t("landing.statRiders")} />
+              <Stat value={t("landing.statValue2")} label={t("landing.statCouncils")} />
+              <Stat value={t("landing.statValue3")} label={t("landing.statUptime")} />
             </motion.div>
           </div>
 
@@ -118,7 +119,7 @@ export default function Landing() {
                 <div className="flex items-center justify-between">
                   <Logo size={32} />
                   <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400">
-                    Live
+                    {t("landing.sampleBadge")}
                   </span>
                 </div>
                 <div className="mt-6 space-y-3">
@@ -140,8 +141,8 @@ export default function Landing() {
               </div>
             </div>
             <div className="absolute -bottom-5 -left-5 hidden sm:block rounded-2xl bg-gold-500 px-4 py-3 shadow-xl">
-              <p className="text-xs font-semibold text-navy-900">Badge scanned</p>
-              <p className="text-[11px] text-navy-800">Molyko Roundabout · 0.4s</p>
+              <p className="text-xs font-semibold text-navy-900">{t("landing.sampleScan")}</p>
+              <p className="text-[11px] text-navy-800">{t("landing.sampleScanSub")}</p>
             </div>
           </motion.div>
         </div>
@@ -204,7 +205,10 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-navy-100 dark:border-navy-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Logo size={28} withWordmark />
+          <div className="flex flex-col items-center gap-4 sm:items-start">
+            <Logo size={28} withWordmark />
+            <PoweredBy />
+          </div>
           <p className="text-xs text-navy-400 dark:text-navy-500 text-center sm:text-right">
             &copy; {new Date().getFullYear()} MotoSecure. {t("landing.footerRights")}
             <br className="sm:hidden" /> {t("landing.footerBuilt")}

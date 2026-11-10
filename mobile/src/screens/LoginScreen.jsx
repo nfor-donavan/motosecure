@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme/ThemeContext";
 import { useAuth } from "../lib/AuthContext";
 import Logo from "../components/Logo";
+import PoweredBy from "../components/PoweredBy";
 
 export default function LoginScreen() {
   const { t } = useTranslation();
@@ -82,7 +83,7 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          <Text style={[styles.hint, { color: theme.textMuted }]}>{t("login.demoHint")}</Text>
+          <PoweredBy />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

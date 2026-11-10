@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "MotoSecure",
-    "tagline": "Safer Riders · Smarter Transport · Stronger Cameroon"
+    "tagline": "Safer Riders · Smarter Transport · Stronger Cameroon",
+    "poweredBy": "A NEXUS Tech Labs product"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -19,9 +20,9 @@
     "heroSubtitle": "MotoSecure gives mayors, syndicates and enforcement officers one shared, trusted system to register riders, track compliance, and respond to incidents across the commune.",
     "ctaPrimary": "Sign in to your dashboard",
     "ctaSecondary": "Register a syndicate",
-    "statRiders": "riders verifiable in seconds",
-    "statCouncils": "councils ready to onboard",
-    "statUptime": "platform availability",
+    "statRiders": "badge verification, with an offline fallback",
+    "statCouncils": "bilingual on web and mobile",
+    "statUptime": "separate data for every municipality",
     "pillarsTitle": "Three surfaces, one source of truth",
     "pillarMayorTitle": "Mayoral Command Dashboard",
     "pillarMayorDesc": "A live view of every syndicate, rider and bike under your authority, with compliance alerts and incident history.",
@@ -37,7 +38,13 @@
     "how3Title": "Officer scans",
     "how3Desc": "A QR badge scan returns a live verdict: valid, expired, or flagged.",
     "footerRights": "All rights reserved.",
-    "footerBuilt": "Built for municipal authorities across Cameroon."
+    "footerBuilt": "Built for municipal authorities across Cameroon.",
+    "statValue1": "QR",
+    "statValue2": "FR · EN",
+    "statValue3": "Multi-council",
+    "sampleBadge": "Sample data",
+    "sampleScan": "Sample scan result",
+    "sampleScanSub": "Illustrative screen"
   },
   "auth": {
     "loginTitle": "Sign in",

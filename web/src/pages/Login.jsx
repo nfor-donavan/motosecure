@@ -3,8 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/Logo";
+import PoweredBy from "../components/PoweredBy";
 import ThemeToggle from "../components/ThemeToggle";
 import LanguageToggle from "../components/LanguageToggle";
+
+// Demo accounts are shown only if supplied at BUILD time, e.g.
+//   VITE_DEMO_ACCOUNTS="email / password;email / password"
+// No credentials are stored in source code, and the default is to show none.
+const DEMO_ACCOUNTS = (import.meta.env.VITE_DEMO_ACCOUNTS || "").split(";").map((x) => x.trim()).filter(Boolean);
 
 export default function Login() {
   const { t } = useTranslation();
@@ -40,7 +46,10 @@ export default function Login() {
           </p>
           <p className="mt-4 max-w-sm text-sm text-navy-200">{t("brand.tagline")}</p>
         </div>
-        <p className="text-xs text-navy-400">&copy; {new Date().getFullYear()} MotoSecure</p>
+        <div className="space-y-3">
+          <PoweredBy tone="light" />
+          <p className="text-xs text-navy-400">&copy; {new Date().getFullYear()} MotoSecure</p>
+        </div>
       </div>
 
       <div className="flex flex-col">
@@ -108,16 +117,18 @@ export default function Login() {
               </Link>
             </p>
 
-            <details className="mt-8 rounded-xl border border-navy-100 dark:border-navy-800 p-4 text-xs text-navy-500 dark:text-navy-400">
-              <summary className="cursor-pointer font-semibold text-navy-700 dark:text-navy-300">
-                {t("auth.demoAccounts")}
-              </summary>
-              <ul className="mt-3 space-y-1.5 font-mono">
-                <li>mayor@buea.cm / Mayor123!</li>
-                <li>syndicate@buea.cm / Syndicate123!</li>
-                <li>officer@buea.cm / Officer123!</li>
-              </ul>
-            </details>
+            {DEMO_ACCOUNTS.length > 0 && (
+              <details className="mt-8 rounded-xl border border-navy-100 dark:border-navy-800 p-4 text-xs text-navy-500 dark:text-navy-400">
+                <summary className="cursor-pointer font-semibold text-navy-700 dark:text-navy-300">
+                  {t("auth.demoAccounts")}
+                </summary>
+                <ul className="mt-3 space-y-1.5 font-mono">
+                  {DEMO_ACCOUNTS.map((a) => (
+                    <li key={a}>{a}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
 
             <Link
               to="/"

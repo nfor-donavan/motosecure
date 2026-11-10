@@ -2,24 +2,41 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const Bike = require("../models/Bike");
 const Rider = require("../models/Rider");
-const { protect, authorize, scopeToSyndicateData } = require("../middleware/auth");
+const { protect, authorize } = require("../middleware/auth");
+const policy = require("../lib/policy");
+const httpError = require("../lib/httpError");
+const { qstr, isObjectId, clampInt } = require("../lib/validate");
+const { recordAudit } = require("../lib/audit");
+const { resolveEnrollmentSyndicate } = require("../lib/enrollment");
 
 const router = express.Router();
+const MANAGERS = ["syndicate_admin", "municipal_staff", "mayor", "super_admin"];
+const BIKE_STATUSES = ["active", "impounded", "decommissioned"];
+
+/** A bike may only be linked to a rider of the same municipality AND syndicate. */
+async function resolveRider(riderId, tenant, syndicate) {
+  if (riderId === undefined) return undefined;          // not being changed
+  if (riderId === null || riderId === "") return null;  // explicit unlink
+  if (!isObjectId(riderId)) throw httpError(400, "Invalid rider");
+  const rider = await Rider.findOne({ _id: riderId, tenant, syndicate });
+  if (!rider) throw httpError(404, "Rider not found in this syndicate");
+  return rider;
+}
 
 // GET /api/bikes
 router.get(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    const filter = { ...scopeToSyndicateData(req) };
-    // A mayor/municipal_staff/super_admin may still narrow to one
-    // syndicate via ?syndicate=; a syndicate_admin is already locked to
-    // their own syndicate above and cannot override it to view another.
-    if (req.query.syndicate && req.user.role !== "syndicate_admin") {
-      filter.syndicate = req.query.syndicate;
-    }
-    if (req.query.status) filter.status = req.query.status;
-    const bikes = await Bike.find(filter).populate("rider", "fullName badgeId").sort({ createdAt: -1 });
+    const filter = policy.syndicateDataScope(req.user, req.query);
+    const syndicate = qstr(req.query.syndicate);
+    if (req.user.role !== "syndicate_admin" && isObjectId(syndicate)) filter.syndicate = syndicate;
+    const status = qstr(req.query.status);
+    if (BIKE_STATUSES.includes(status)) filter.status = status;
+    const bikes = await Bike.find(filter)
+      .populate("rider", "fullName badgeId")
+      .sort({ createdAt: -1 })
+      .limit(clampInt(req.query.limit, 1000, 1, 2000));
     res.json({ success: true, count: bikes.length, bikes });
   })
 );
@@ -28,45 +45,44 @@ router.get(
 router.post(
   "/",
   protect,
-  authorize("syndicate_admin", "municipal_staff", "mayor", "super_admin"),
+  authorize(...MANAGERS),
   asyncHandler(async (req, res) => {
-    const payload = { ...req.body, tenant: req.tenantId || req.body.tenant };
-    // A syndicate_admin can only ever register bikes under their own
-    // syndicate, regardless of what the request body claims.
-    if (req.user.role === "syndicate_admin") {
-      payload.syndicate = req.user.syndicate;
-    }
-    const bike = await Bike.create(payload);
-    if (bike.rider) {
-      await Rider.findByIdAndUpdate(bike.rider, { bike: bike._id });
-    }
+    const data = policy.pick(req.body, policy.bikeWritableFields(req.user.role, true));
+    const syndicate = await resolveEnrollmentSyndicate(req, data.syndicate);
+    const rider = await resolveRider(data.rider, syndicate.tenant, syndicate._id);
+    const bike = await Bike.create({ ...data, rider: rider ? rider._id : null, syndicate: syndicate._id, tenant: syndicate.tenant });
+    if (rider) await Rider.updateOne({ _id: rider._id }, { $set: { bike: bike._id } });
+    await recordAudit(req, { tenant: bike.tenant, action: "bike.created", targetType: "Bike", targetId: bike._id, targetLabel: bike.plateNumber });
     res.status(201).json({ success: true, bike });
   })
 );
 
-// PATCH /api/bikes/:id
+// PATCH /api/bikes/:id  (tenant and syndicate are not editable)
 router.patch(
   "/:id",
   protect,
-  authorize("syndicate_admin", "municipal_staff", "mayor", "super_admin"),
+  authorize(...MANAGERS),
   asyncHandler(async (req, res) => {
-    const updates = { ...req.body };
-    // A syndicate_admin cannot move a bike to a different syndicate or
-    // tenant, no matter what the request body contains.
-    if (req.user.role === "syndicate_admin") {
-      delete updates.syndicate;
-      delete updates.tenant;
+    const existing = await Bike.findOne({ _id: req.params.id, ...policy.syndicateDataScope(req.user, req.query) });
+    if (!existing) throw httpError(404, "Bike not found");
+
+    const data = policy.pick(req.body, policy.bikeWritableFields(req.user.role));
+    const newRider = await resolveRider(data.rider, existing.tenant, existing.syndicate);
+    delete data.rider;
+
+    Object.assign(existing, data);
+    const oldRiderId = existing.rider ? String(existing.rider) : null;
+    if (newRider !== undefined) existing.rider = newRider ? newRider._id : null;
+    await existing.save();
+
+    if (newRider !== undefined) {
+      if (oldRiderId && oldRiderId !== String(existing.rider || "")) {
+        await Rider.updateOne({ _id: oldRiderId, bike: existing._id }, { $set: { bike: null } });
+      }
+      if (newRider) await Rider.updateOne({ _id: newRider._id }, { $set: { bike: existing._id } });
     }
-    const bike = await Bike.findOneAndUpdate(
-      { _id: req.params.id, ...scopeToSyndicateData(req) },
-      updates,
-      { new: true, runValidators: true }
-    );
-    if (!bike) {
-      res.status(404);
-      throw new Error("Bike not found");
-    }
-    res.json({ success: true, bike });
+    await recordAudit(req, { tenant: existing.tenant, action: "bike.updated", targetType: "Bike", targetId: existing._id, targetLabel: existing.plateNumber, metadata: { fields: Object.keys(req.body || {}).filter((k) => policy.bikeWritableFields(req.user.role).includes(k)) } });
+    res.json({ success: true, bike: existing });
   })
 );
 

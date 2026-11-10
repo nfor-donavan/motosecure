@@ -5,6 +5,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { useAuth } from "../lib/AuthContext";
 import { setLanguage } from "../i18n";
 import Logo from "../components/Logo";
+import PoweredBy from "../components/PoweredBy";
 
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -44,6 +45,7 @@ export default function SettingsScreen() {
       <TouchableOpacity style={[styles.logoutButton, { borderColor: theme.border }]} onPress={logout}>
         <Text style={{ color: "#E11D48", fontWeight: "700" }}>{t("settings.logout")}</Text>
       </TouchableOpacity>
+      <PoweredBy />
     </SafeAreaView>
   );
 }

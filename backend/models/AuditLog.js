@@ -1,42 +1,47 @@
 const mongoose = require("mongoose");
 
 /**
- * Records who did what, to which record, and when - for administrative
- * actions that a government deployment needs to be able to answer for
- * (e.g. "who approved this syndicate?", "who suspended this rider, and
- * why?"). This is intentionally append-only: routes create entries here
- * but nothing ever updates or deletes them.
+ * Append-only record of administrative actions. Application-level
+ * guards below reject updates and deletes through Mongoose. This does
+ * NOT protect against someone with direct database access: for that,
+ * use a database role without update/delete rights on this collection
+ * (see the Security, Privacy and Governance Policy).
  */
 const auditLogSchema = new mongoose.Schema(
   {
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tenant",
-      required: true,
       index: true,
+      required: function () {
+        return this.actorRole !== "super_admin";
+      },
     },
-    actor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    actor: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     actorName: { type: String, trim: true },
     actorRole: { type: String, trim: true },
-    action: {
-      type: String,
-      required: true,
-      trim: true,
-      // e.g. "syndicate.approved", "syndicate.rejected",
-      // "syndicate.suspended", "syndicate.created", "rider.status_changed"
-    },
-    targetType: { type: String, trim: true }, // "Syndicate" | "Rider" | "Bike"
+    action: { type: String, required: true, trim: true },
+    targetType: { type: String, trim: true },
     targetId: { type: mongoose.Schema.Types.ObjectId },
-    targetLabel: { type: String, trim: true }, // human-readable, e.g. rider's name
-    metadata: { type: mongoose.Schema.Types.Mixed }, // e.g. { from: "pending", to: "approved" }
+    targetLabel: { type: String, trim: true },
+    metadata: { type: mongoose.Schema.Types.Mixed },
+    ip: { type: String, trim: true },
   },
   { timestamps: true }
 );
 
 auditLogSchema.index({ tenant: 1, createdAt: -1 });
+
+const deny = function () {
+  throw new Error("AuditLog is append-only: updates and deletes are not permitted");
+};
+["updateOne", "updateMany", "findOneAndUpdate", "findOneAndReplace", "replaceOne", "deleteMany", "findOneAndDelete"].forEach((op) =>
+  auditLogSchema.pre(op, { document: false, query: true }, deny)
+);
+auditLogSchema.pre("deleteOne", { document: false, query: true }, deny);
+auditLogSchema.pre("deleteOne", { document: true, query: false }, deny);
+auditLogSchema.pre("save", function () {
+  if (!this.isNew) deny();
+});
 
 module.exports = mongoose.model("AuditLog", auditLogSchema);

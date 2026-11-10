@@ -1,0 +1,285 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/audit-logs",
+    "file": "backend/routes/auditRoutes.js",
+    "auth": "required",
+    "roles": [
+      "mayor",
+      "municipal_staff",
+      "super_admin"
+    ],
+    "writes": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "file": "backend/routes/authRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/register-syndicate",
+    "file": "backend/routes/authRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/forgot-password",
+    "file": "backend/routes/authRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/reset-password",
+    "file": "backend/routes/authRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/auth/me",
+    "file": "backend/routes/authRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/bikes",
+    "file": "backend/routes/bikeRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/bikes",
+    "file": "backend/routes/bikeRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...MANAGERS"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/bikes/:id",
+    "file": "backend/routes/bikeRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...MANAGERS"
+    ],
+    "writes": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/enforcement/verify/:badgeId",
+    "file": "backend/routes/enforcementRoutes.js",
+    "auth": "optional",
+    "roles": [],
+    "writes": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/enforcement/sync-scans",
+    "file": "backend/routes/enforcementRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...FIELD_ROLES"
+    ],
+    "writes": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/enforcement/incident",
+    "file": "backend/routes/enforcementRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...FIELD_ROLES"
+    ],
+    "writes": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/enforcement/logs",
+    "file": "backend/routes/enforcementRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/enforcement/stats",
+    "file": "backend/routes/enforcementRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/riders/offline-snapshot",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [
+      "enforcement_officer",
+      "...COUNCIL"
+    ],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/riders",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/riders/:id/badge-qr",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...MANAGERS"
+    ],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/riders/:id",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/riders",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...MANAGERS"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/riders/:id",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...MANAGERS"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/riders/:id/status",
+    "file": "backend/routes/riderRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...COUNCIL"
+    ],
+    "writes": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/syndicates",
+    "file": "backend/routes/syndicateRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/syndicates/:id",
+    "file": "backend/routes/syndicateRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/syndicates",
+    "file": "backend/routes/syndicateRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...COUNCIL"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/syndicates/:id/status",
+    "file": "backend/routes/syndicateRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...COUNCIL"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/syndicates/:id",
+    "file": "backend/routes/syndicateRoutes.js",
+    "auth": "required",
+    "roles": [
+      "...COUNCIL",
+      "syndicate_admin"
+    ],
+    "writes": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/tenants",
+    "file": "backend/routes/tenantRoutes.js",
+    "auth": "required",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/tenants/public",
+    "file": "backend/routes/tenantRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/tenants/lookup/:slug",
+    "file": "backend/routes/tenantRoutes.js",
+    "auth": "none",
+    "roles": [],
+    "writes": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/tenants",
+    "file": "backend/routes/tenantRoutes.js",
+    "auth": "required",
+    "roles": [
+      "super_admin"
+    ],
+    "writes": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/tenants/:id",
+    "file": "backend/routes/tenantRoutes.js",
+    "auth": "required",
+    "roles": [
+      "super_admin",
+      "mayor"
+    ],
+    "writes": false
+  }
+]

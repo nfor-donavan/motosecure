@@ -1,28 +1,35 @@
+"use strict";
 const AuditLog = require("../models/AuditLog");
 
 /**
- * Writes one audit log entry. Called from routes right after a
- * successful administrative action. Deliberately fire-and-forget-safe:
- * if writing the audit log itself fails, we log the error but don't
- * fail the underlying request - a missing audit entry is bad, but
- * blocking a real action because logging failed would be worse.
+ * Appends an audit entry. A failure to write the audit record is logged
+ * to the server console but does not fail the user's request: this is a
+ * deliberate availability-over-completeness trade-off, documented in
+ * the Security Assessment. Entries never contain passwords, tokens or
+ * personal identifiers beyond the target's display label.
  */
-const recordAudit = async (req, { action, targetType, targetId, targetLabel, metadata }) => {
+async function recordAuditEvent(entry) {
   try {
-    await AuditLog.create({
-      tenant: req.tenantId || req.body?.tenant,
-      actor: req.user._id,
-      actorName: req.user.fullName,
-      actorRole: req.user.role,
-      action,
-      targetType,
-      targetId,
-      targetLabel,
-      metadata,
-    });
+    await AuditLog.create(entry);
   } catch (err) {
-    console.error("[audit] Failed to record audit log:", err.message);
+    console.error("[audit] failed to record audit entry:", err.message);
   }
-};
+}
 
-module.exports = { recordAudit };
+/** Convenience wrapper for authenticated requests. */
+function recordAudit(req, { tenant, action, targetType, targetId, targetLabel, metadata }) {
+  return recordAuditEvent({
+    tenant: tenant || req.tenantId || undefined,
+    actor: req.user._id,
+    actorName: req.user.fullName,
+    actorRole: req.user.role,
+    action,
+    targetType,
+    targetId,
+    targetLabel,
+    metadata,
+    ip: req.ip,
+  });
+}
+
+module.exports = { recordAudit, recordAuditEvent };

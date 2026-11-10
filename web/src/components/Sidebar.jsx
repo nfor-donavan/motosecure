@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Logo from "./Logo";
+import PoweredBy from "./PoweredBy";
 import { useAuth } from "../context/AuthContext";
 import {
   IconDashboard,
@@ -79,6 +80,7 @@ export default function Sidebar({ open, onClose }) {
           <div className="rounded-xl bg-white/5 p-4 text-xs text-navy-300 leading-relaxed">
             {t("landing.footerBuilt")}
           </div>
+          <PoweredBy tone="light" className="mt-3 px-1" />
         </div>
       </aside>
     </>

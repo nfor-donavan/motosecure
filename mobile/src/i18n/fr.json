@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "MotoSecure",
-    "subtitle": "Contrôle"
+    "subtitle": "Contrôle",
+    "poweredBy": "Un produit NEXUS Tech Labs"
   },
   "home": {
     "greeting": "Console de contrôle",
@@ -45,7 +46,8 @@
     "errorTitle": "Vérification impossible",
     "errorBody": "Vérifiez votre connexion et réessayez.",
     "errorBodyOffline": "Aucune connexion, et ce badge ne figure pas dans vos données synchronisées. Vérifiez votre connexion et réessayez.",
-    "offlineNotice": "Aucune connexion - affichage du dernier résultat synchronisé. Ce scan sera synchronisé automatiquement dès le retour de la connexion."
+    "offlineNotice": "Aucune connexion - affichage du dernier résultat synchronisé. Ce scan sera synchronisé automatiquement dès le retour de la connexion.",
+    "offlineAsOf": "Données au {{date}}."
   },
   "incident": {
     "title": "Signaler un incident",
@@ -70,8 +72,7 @@
     "password": "Mot de passe",
     "signIn": "Se connecter",
     "signingIn": "Connexion en cours…",
-    "invalidCredentials": "E-mail ou mot de passe invalide.",
-    "demoHint": "Démo : officer@buea.cm / Officer123!"
+    "invalidCredentials": "E-mail ou mot de passe invalide."
   },
   "settings": {
     "title": "Paramètres",

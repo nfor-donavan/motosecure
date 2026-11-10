@@ -3,19 +3,14 @@ const bcrypt = require("bcryptjs");
 
 /**
  * Roles:
- *  - super_admin        platform owner (MotoSecure staff, cross-tenant)
+ *  - super_admin         platform operator (cross-tenant)
  *  - mayor               municipal command dashboard, full tenant access
- *  - municipal_staff      delegated council staff, read-mostly
- *  - syndicate_admin      manages one syndicate's riders & bikes
- *  - enforcement_officer   uses the public enforcement app to verify riders
+ *  - municipal_staff     delegated council staff
+ *  - syndicate_admin     manages one syndicate's riders & bikes
+ *  - enforcement_officer uses the mobile app to verify riders
  */
-const ROLES = [
-  "super_admin",
-  "mayor",
-  "municipal_staff",
-  "syndicate_admin",
-  "enforcement_officer",
-];
+const ROLES = ["super_admin", "mayor", "municipal_staff", "syndicate_admin", "enforcement_officer"];
+const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 const userSchema = new mongoose.Schema(
   {
@@ -26,39 +21,30 @@ const userSchema = new mongoose.Schema(
         return this.role !== "super_admin";
       },
     },
-    syndicate: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Syndicate",
-      default: null,
-    },
+    syndicate: { type: mongoose.Schema.Types.ObjectId, ref: "Syndicate", default: null },
     fullName: { type: String, required: true, trim: true },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, trim: true },
     passwordHash: { type: String, required: true, select: false },
     role: { type: String, enum: ROLES, required: true },
-    badgeNumber: { type: String, trim: true }, // for enforcement_officer
+    badgeNumber: { type: String, trim: true },
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date },
     preferredLanguage: { type: String, enum: ["en", "fr"], default: "en" },
-    // Password reset: we store a hash of the token, never the raw token
-    // itself, the same way we store a password hash rather than a
-    // plaintext password. The raw token only ever exists in the emailed
-    // link and briefly in the request body when the user submits it.
+    // Password reset: only a hash of the token is stored.
     resetPasswordTokenHash: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
+    // Brute-force protection and session invalidation.
+    failedLoginCount: { type: Number, default: 0 },
+    lockUntil: { type: Date },
+    passwordChangedAt: { type: Date },
   },
   { timestamps: true }
 );
 
 userSchema.methods.setPassword = async function (plainPassword) {
-  const salt = await bcrypt.genSalt(10);
-  this.passwordHash = await bcrypt.hash(plainPassword, salt);
+  this.passwordHash = await bcrypt.hash(plainPassword, await bcrypt.genSalt(BCRYPT_ROUNDS));
+  this.passwordChangedAt = new Date();
 };
 
 userSchema.methods.comparePassword = function (plainPassword) {
@@ -68,6 +54,11 @@ userSchema.methods.comparePassword = function (plainPassword) {
 userSchema.methods.toSafeJSON = function () {
   const obj = this.toObject();
   delete obj.passwordHash;
+  delete obj.failedLoginCount;
+  delete obj.lockUntil;
+  delete obj.passwordChangedAt;
+  delete obj.resetPasswordTokenHash;
+  delete obj.resetPasswordExpires;
   return obj;
 };
 

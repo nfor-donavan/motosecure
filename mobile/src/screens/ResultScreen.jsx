@@ -7,7 +7,7 @@ import { palette } from "../theme/colors";
 import api from "../lib/api";
 import StatusPill from "../components/StatusPill";
 import { pushRecentScan } from "./HomeScreen";
-import { lookupInSnapshot, resolveOfflineResult, queueOfflineScan } from "../lib/offlineCache";
+import { lookupInSnapshot, resolveOfflineResult, queueOfflineScan, isNetworkFailure, getSnapshotMeta } from "../lib/offlineCache";
 
 const RESULT_TONE = {
   valid: { bg: palette.emeraldBg, fg: palette.emerald },
@@ -25,6 +25,7 @@ export default function ResultScreen({ route, navigation }) {
   const [error, setError] = useState(false);
   const [data, setData] = useState(null);
   const [isOffline, setIsOffline] = useState(false);
+  const [snapshotAt, setSnapshotAt] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -49,7 +50,9 @@ export default function ResultScreen({ route, navigation }) {
         },
       };
 
-      await queueOfflineScan({ badgeId, result });
+      await queueOfflineScan({ badgeId: cached.badgeId, result });
+      const meta = await getSnapshotMeta();
+      if (mounted) setSnapshotAt(meta.generatedAt);
       await pushRecentScan({ badgeId, fullName: cached.fullName, result });
 
       if (mounted) {
@@ -69,7 +72,8 @@ export default function ResultScreen({ route, navigation }) {
           result: res.result,
         });
       })
-      .catch(tryOfflineFallback)
+      // Only a genuine connectivity failure uses the cache; an authentication or server error is shown as an error.
+      .catch((err) => (isNetworkFailure(err) ? tryOfflineFallback() : mounted && setError(true)))
       .finally(() => mounted && setLoading(false));
 
     return () => {
@@ -109,7 +113,7 @@ export default function ResultScreen({ route, navigation }) {
       {isOffline && (
         <View style={[styles.offlineNotice, { backgroundColor: theme.surfaceAlt, borderColor: theme.border }]}>
           <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "600" }}>
-            {t("result.offlineNotice")}
+            {t("result.offlineNotice")}{snapshotAt ? ` ${t("result.offlineAsOf", { date: new Date(snapshotAt).toLocaleString() })}` : ""}
           </Text>
         </View>
       )}
@@ -140,7 +144,7 @@ export default function ResultScreen({ route, navigation }) {
       )}
 
       <View style={styles.actions}>
-        {rider && !isOffline && (
+        {rider && rider.id && !isOffline && (
           <TouchableOpacity
             style={[styles.secondaryButton, { borderColor: theme.border }]}
             onPress={() => navigation.navigate("Incident", { riderId: rider.id, riderName: rider.fullName })}

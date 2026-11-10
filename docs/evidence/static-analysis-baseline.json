@@ -1,0 +1,674 @@
+{
+  "label": "baseline",
+  "generatedAt": "2026-10-26T10:39:38.314Z",
+  "summary": {
+    "high": 17,
+    "medium": 17,
+    "low": 3
+  },
+  "envIgnoredByGit": true,
+  "findings": [
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/auditRoutes.js",
+      "line": 19,
+      "snippet": "if (req.query.action) filter.action = req.query.action;"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/auditRoutes.js",
+      "line": 20,
+      "snippet": "if (req.query.targetType) filter.targetType = req.query.targetType;"
+    },
+    {
+      "id": "SA-02",
+      "severity": "high",
+      "title": "Record fetched or updated by ID without tenant scope",
+      "file": "backend/routes/authRoutes.js",
+      "line": 44,
+      "snippet": "tenant = await Tenant.findById(user.tenant);"
+    },
+    {
+      "id": "SA-02",
+      "severity": "high",
+      "title": "Record fetched or updated by ID without tenant scope",
+      "file": "backend/routes/authRoutes.js",
+      "line": 209,
+      "snippet": "if (req.user.tenant) tenant = await Tenant.findById(req.user.tenant);"
+    },
+    {
+      "id": "SA-01",
+      "severity": "high",
+      "title": "Request body spread into a database write (mass assignment)",
+      "file": "backend/routes/bikeRoutes.js",
+      "line": 33,
+      "snippet": "const payload = { ...req.body, tenant: req.tenantId || req.body.tenant };"
+    },
+    {
+      "id": "SA-01",
+      "severity": "high",
+      "title": "Request body spread into a database write (mass assignment)",
+      "file": "backend/routes/bikeRoutes.js",
+      "line": 53,
+      "snippet": "const updates = { ...req.body };"
+    },
+    {
+      "id": "SA-02",
+      "severity": "high",
+      "title": "Record fetched or updated by ID without tenant scope",
+      "file": "backend/routes/bikeRoutes.js",
+      "line": 41,
+      "snippet": "await Rider.findByIdAndUpdate(bike.rider, { bike: bike._id });"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/bikeRoutes.js",
+      "line": 19,
+      "snippet": "filter.syndicate = req.query.syndicate;"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/bikeRoutes.js",
+      "line": 21,
+      "snippet": "if (req.query.status) filter.status = req.query.status;"
+    },
+    {
+      "id": "SA-02",
+      "severity": "high",
+      "title": "Record fetched or updated by ID without tenant scope",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 131,
+      "snippet": "const rider = await Rider.findById(riderId);"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 164,
+      "snippet": "if (req.query.type) filter.type = req.query.type;"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 165,
+      "snippet": "if (req.query.rider) filter.rider = req.query.rider;"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 171,
+      "snippet": "filter.rider = req.query.rider ? req.query.rider : { $in: syndicateRiderIds };"
+    },
+    {
+      "id": "SA-11",
+      "severity": "medium",
+      "title": "Unbounded or unvalidated bulk input",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 92,
+      "snippet": "const { scans } = req.body; // [{ badgeId, result, scannedAt }, ...]"
+    },
+    {
+      "id": "SA-01",
+      "severity": "high",
+      "title": "Request body spread into a database write (mass assignment)",
+      "file": "backend/routes/riderRoutes.js",
+      "line": 102,
+      "snippet": "const payload = { ...req.body, tenant: req.tenantId || req.body.tenant };"
+    },
+    {
+      "id": "SA-01",
+      "severity": "high",
+      "title": "Request body spread into a database write (mass assignment)",
+      "file": "backend/routes/riderRoutes.js",
+      "line": 119,
+      "snippet": "const updates = { ...req.body };"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/riderRoutes.js",
+      "line": 20,
+      "snippet": "filter.syndicate = req.query.syndicate;"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/riderRoutes.js",
+      "line": 22,
+      "snippet": "if (req.query.status) filter.status = req.query.status;"
+    },
+    {
+      "id": "SA-01",
+      "severity": "high",
+      "title": "Request body spread into a database write (mass assignment)",
+      "file": "backend/routes/syndicateRoutes.js",
+      "line": 54,
+      "snippet": "const syndicate = await Syndicate.create({ ...req.body, tenant: req.tenantId || req.body.tenant });"
+    },
+    {
+      "id": "SA-03",
+      "severity": "medium",
+      "title": "Query-string value placed directly into a database filter",
+      "file": "backend/routes/syndicateRoutes.js",
+      "line": 28,
+      "snippet": "if (req.query.status) filter.status = req.query.status;"
+    },
+    {
+      "id": "SA-02",
+      "severity": "high",
+      "title": "Record fetched or updated by ID without tenant scope",
+      "file": "backend/routes/tenantRoutes.js",
+      "line": 67,
+      "snippet": "const tenant = await Tenant.findByIdAndUpdate(req.params.id, req.body, {"
+    },
+    {
+      "id": "SA-07",
+      "severity": "medium",
+      "title": "Permissive CORS configuration",
+      "file": "backend/server.js",
+      "line": 32,
+      "snippet": "if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(\"*\")) {"
+    },
+    {
+      "id": "SA-09",
+      "severity": "medium",
+      "title": "Large JSON body limit on an API with no upload endpoints",
+      "file": "backend/server.js",
+      "line": 24,
+      "snippet": "app.use(express.json({ limit: \"5mb\" }));"
+    },
+    {
+      "id": "SA-06",
+      "severity": "high",
+      "title": "Working demo credentials displayed in client UI",
+      "file": "mobile/src/i18n/en.json",
+      "line": 75,
+      "snippet": "\"demoHint\": \"Demo: officer@buea.cm / Officer123!\""
+    },
+    {
+      "id": "SA-06",
+      "severity": "high",
+      "title": "Working demo credentials displayed in client UI",
+      "file": "mobile/src/i18n/fr.json",
+      "line": 74,
+      "snippet": "\"demoHint\": \"Démo : officer@buea.cm / Officer123!\""
+    },
+    {
+      "id": "SA-08",
+      "severity": "low",
+      "title": "Auth token kept in unencrypted client storage",
+      "file": "mobile/src/lib/AuthContext.jsx",
+      "line": 31,
+      "snippet": "await AsyncStorage.setItem(\"motosecure-token\", data.token);"
+    },
+    {
+      "id": "SA-08",
+      "severity": "low",
+      "title": "Auth token kept in unencrypted client storage",
+      "file": "web/src/context/AuthContext.jsx",
+      "line": 31,
+      "snippet": "window.localStorage.setItem(\"motosecure-token\", data.token);"
+    },
+    {
+      "id": "SA-10",
+      "severity": "medium",
+      "title": "Unsupported statistic hard-coded in marketing UI",
+      "file": "web/src/pages/Landing.jsx",
+      "line": 104,
+      "snippet": "<Stat value=\"10,000+\" label={t(\"landing.statRiders\")} />"
+    },
+    {
+      "id": "SA-10",
+      "severity": "medium",
+      "title": "Unsupported statistic hard-coded in marketing UI",
+      "file": "web/src/pages/Landing.jsx",
+      "line": 105,
+      "snippet": "<Stat value=\"15+\" label={t(\"landing.statCouncils\")} />"
+    },
+    {
+      "id": "SA-10",
+      "severity": "medium",
+      "title": "Unsupported statistic hard-coded in marketing UI",
+      "file": "web/src/pages/Landing.jsx",
+      "line": 106,
+      "snippet": "<Stat value=\"99.9%\" label={t(\"landing.statUptime\")} />"
+    },
+    {
+      "id": "SA-06",
+      "severity": "high",
+      "title": "Working demo credentials displayed in client UI",
+      "file": "web/src/pages/Login.jsx",
+      "line": 116,
+      "snippet": "<li>mayor@buea.cm / Mayor123!</li>"
+    },
+    {
+      "id": "SA-06",
+      "severity": "high",
+      "title": "Working demo credentials displayed in client UI",
+      "file": "web/src/pages/Login.jsx",
+      "line": 117,
+      "snippet": "<li>syndicate@buea.cm / Syndicate123!</li>"
+    },
+    {
+      "id": "SA-06",
+      "severity": "high",
+      "title": "Working demo credentials displayed in client UI",
+      "file": "web/src/pages/Login.jsx",
+      "line": 118,
+      "snippet": "<li>officer@buea.cm / Officer123!</li>"
+    },
+    {
+      "id": "SA-08",
+      "severity": "low",
+      "title": "Auth token kept in unencrypted client storage",
+      "file": "web/src/pages/Register.jsx",
+      "line": 56,
+      "snippet": "window.localStorage.setItem(\"motosecure-token\", data.token);"
+    },
+    {
+      "id": "SA-12",
+      "severity": "high",
+      "title": "Unauthenticated or optionally-authenticated GET handler performs database writes",
+      "file": "backend/routes/enforcementRoutes.js",
+      "line": 28,
+      "snippet": "GET /api/enforcement/verify/:badgeId"
+    },
+    {
+      "id": "SA-13",
+      "severity": "medium",
+      "title": "Rate limiting used behind a proxy without 'trust proxy' (limits key on the proxy address)",
+      "file": "backend/server.js",
+      "line": 1,
+      "snippet": "no app.set('trust proxy', ...)"
+    },
+    {
+      "id": "SA-14",
+      "severity": "high",
+      "title": "Local secrets file present in the project tree (must never be committed or shared in archives)",
+      "file": "backend/.env",
+      "line": 1,
+      "snippet": "(contents deliberately not shown)"
+    }
+  ],
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/audit-logs",
+      "file": "backend/routes/auditRoutes.js",
+      "auth": "required",
+      "roles": [
+        "mayor",
+        "municipal_staff",
+        "super_admin"
+      ],
+      "writes": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "file": "backend/routes/authRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register-syndicate",
+      "file": "backend/routes/authRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "file": "backend/routes/authRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "file": "backend/routes/authRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "file": "backend/routes/authRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/bikes",
+      "file": "backend/routes/bikeRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/bikes",
+      "file": "backend/routes/bikeRoutes.js",
+      "auth": "required",
+      "roles": [
+        "syndicate_admin",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/bikes/:id",
+      "file": "backend/routes/bikeRoutes.js",
+      "auth": "required",
+      "roles": [
+        "syndicate_admin",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/enforcement/verify/:badgeId",
+      "file": "backend/routes/enforcementRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/enforcement/sync-scans",
+      "file": "backend/routes/enforcementRoutes.js",
+      "auth": "required",
+      "roles": [
+        "enforcement_officer",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/enforcement/incident",
+      "file": "backend/routes/enforcementRoutes.js",
+      "auth": "required",
+      "roles": [
+        "enforcement_officer",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/enforcement/logs",
+      "file": "backend/routes/enforcementRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/enforcement/stats",
+      "file": "backend/routes/enforcementRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/riders",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/riders/offline-snapshot",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [
+        "enforcement_officer",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/riders/:id",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/riders/:id/badge-qr",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/riders",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [
+        "syndicate_admin",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/riders/:id",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [
+        "syndicate_admin",
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/riders/:id/status",
+      "file": "backend/routes/riderRoutes.js",
+      "auth": "required",
+      "roles": [
+        "municipal_staff",
+        "mayor",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/syndicates",
+      "file": "backend/routes/syndicateRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/syndicates/:id",
+      "file": "backend/routes/syndicateRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/syndicates",
+      "file": "backend/routes/syndicateRoutes.js",
+      "auth": "required",
+      "roles": [
+        "mayor",
+        "municipal_staff",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/syndicates/:id/status",
+      "file": "backend/routes/syndicateRoutes.js",
+      "auth": "required",
+      "roles": [
+        "mayor",
+        "municipal_staff",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/syndicates/:id",
+      "file": "backend/routes/syndicateRoutes.js",
+      "auth": "required",
+      "roles": [
+        "mayor",
+        "municipal_staff",
+        "syndicate_admin",
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/tenants",
+      "file": "backend/routes/tenantRoutes.js",
+      "auth": "required",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/tenants/public",
+      "file": "backend/routes/tenantRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/tenants/lookup/:slug",
+      "file": "backend/routes/tenantRoutes.js",
+      "auth": "none",
+      "roles": [],
+      "writes": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenants",
+      "file": "backend/routes/tenantRoutes.js",
+      "auth": "required",
+      "roles": [
+        "super_admin"
+      ],
+      "writes": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tenants/:id",
+      "file": "backend/routes/tenantRoutes.js",
+      "auth": "required",
+      "roles": [
+        "super_admin",
+        "mayor"
+      ],
+      "writes": false
+    }
+  ],
+  "dependencies": {
+    "backend": {
+      "declared": 13,
+      "runtime": {
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "express-async-handler": "^1.2.0",
+        "express-rate-limit": "^7.4.0",
+        "helmet": "^7.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.5.2",
+        "morgan": "^1.10.0",
+        "nodemailer": "^6.9.14",
+        "qrcode": "^1.5.4",
+        "uuid": "^9.0.1"
+      },
+      "possiblyUnused": []
+    },
+    "web": {
+      "declared": 8,
+      "runtime": {
+        "axios": "^1.7.4",
+        "framer-motion": "^11.3.24",
+        "i18next": "^23.12.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-i18next": "^15.0.1",
+        "react-router-dom": "^6.26.0",
+        "recharts": "^2.12.7"
+      },
+      "possiblyUnused": []
+    },
+    "mobile": {
+      "declared": 13,
+      "runtime": {
+        "@react-native-async-storage/async-storage": "1.23.1",
+        "axios": "^1.7.4",
+        "expo": "~51.0.28",
+        "expo-camera": "~15.0.16",
+        "expo-status-bar": "~1.12.1",
+        "i18next": "^23.12.2",
+        "react": "18.2.0",
+        "react-i18next": "^15.0.1",
+        "react-native": "0.74.5",
+        "react-native-safe-area-context": "4.10.5",
+        "react-native-screens": "3.31.1",
+        "@react-navigation/native": "^6.1.18",
+        "@react-navigation/native-stack": "^6.11.0"
+      },
+      "possiblyUnused": []
+    }
+  },
+  "advisoryCheck": "NOT RUN - requires network access to the npm advisory database (run `npm audit` in each package)"
+}
